@@ -1,0 +1,1 @@
+ALTER TABLE public.work_shift_members ADD COLUMN IF NOT EXISTS council text;

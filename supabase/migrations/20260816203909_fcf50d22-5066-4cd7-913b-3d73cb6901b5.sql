@@ -1,0 +1,2 @@
+update assessment_periods set due_date = current_date + 10 where id='ec684526-7a42-483e-854d-769aefdfbd02';
+update period_deadlines set due_date = current_date + 10 where period_id='ec684526-7a42-483e-854d-769aefdfbd02';

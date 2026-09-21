@@ -1,0 +1,2 @@
+INSERT INTO public.profiles (id, username, full_name) VALUES ('b7b8d1b1-804f-44a2-8ae2-32ec2f7c5470', 'direcao', 'Vanessa') ON CONFLICT (id) DO UPDATE SET username = EXCLUDED.username, full_name = EXCLUDED.full_name;
+INSERT INTO public.user_roles (user_id, role) VALUES ('b7b8d1b1-804f-44a2-8ae2-32ec2f7c5470', 'master') ON CONFLICT (user_id, role) DO NOTHING;

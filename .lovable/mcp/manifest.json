@@ -1,0 +1,178 @@
+{
+  "version": 1,
+  "sdk_version": "2.0.4",
+  "path": "/mcp",
+  "auth": {
+    "type": "oauth",
+    "issuer": "https://ymqmeldafedqzyiidcfw.supabase.co/auth/v1",
+    "accepted_audiences": [
+      "authenticated"
+    ]
+  },
+  "mcp": {
+    "server": {
+      "name": "sistema-interno-ilpi",
+      "version": "0.1.0",
+      "title": "Sistema Interno — I.L.P.I"
+    },
+    "tools": [
+      {
+        "name": "listar_residentes",
+        "title": "Listar residentes",
+        "description": "Busca residentes da ILPI pelo nome (ou lista os ativos) com data de nascimento e sexo.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {
+            "nome": {
+              "description": "Parte do nome completo do residente.",
+              "type": "string"
+            },
+            "limite": {
+              "description": "Máximo de resultados (padrão 20).",
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            }
+          }
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "avaliacoes_do_residente",
+        "title": "Avaliações do residente",
+        "description": "Lista as avaliações por especialidade (e o PIA) de um residente, com situação e datas.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {
+            "resident_id": {
+              "type": "string",
+              "description": "Identificador do residente."
+            },
+            "especialidade": {
+              "description": "Filtrar por especialidade.",
+              "type": "string"
+            },
+            "limite": {
+              "description": "Máximo de registros (padrão 20).",
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "resident_id"
+          ]
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "censo_de_enfermagem",
+        "title": "Censo de enfermagem",
+        "description": "Retorna o censo de enfermagem de uma data (padrão: o mais recente disponível).",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {
+            "data": {
+              "description": "Data do censo no formato AAAA-MM-DD.",
+              "type": "string"
+            }
+          }
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "relatorios_de_plantao",
+        "title": "Relatórios de plantão",
+        "description": "Lista os relatórios de plantão mais recentes, com autor, data e conteúdo.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {
+            "data": {
+              "description": "Filtrar por data (AAAA-MM-DD).",
+              "type": "string"
+            },
+            "limite": {
+              "description": "Máximo de relatórios (padrão 10).",
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            }
+          }
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "calcular_news",
+        "title": "Calcular escala NEWS 2",
+        "description": "Calcula a pontuação NEWS 2 a partir dos sinais vitais e retorna classificação e conduta.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {
+            "fr": {
+              "type": "string",
+              "description": "Frequência respiratória (irpm)."
+            },
+            "spo2": {
+              "type": "string",
+              "description": "Saturação de oxigênio (%)."
+            },
+            "temp": {
+              "type": "string",
+              "description": "Temperatura (°C)."
+            },
+            "pas": {
+              "type": "string",
+              "description": "Pressão arterial sistólica, ou no formato 120/80."
+            },
+            "fc": {
+              "type": "string",
+              "description": "Frequência cardíaca (bpm)."
+            },
+            "mental": {
+              "description": "Estado mental: 'Normal / Alerta' ou 'Alterado (confusão, agitação, letargia)'.",
+              "type": "string"
+            }
+          },
+          "required": [
+            "fr",
+            "spo2",
+            "temp",
+            "pas",
+            "fc"
+          ]
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}
