@@ -46,7 +46,8 @@ export const Route = createFileRoute("/_authenticated/censo")({
       { property: "og:title", content: "Censo de Enfermagem — Sistema Interno ILPI" },
       {
         property: "og:description",
-        content: "Escala diária de enfermagem da I.L.P.I. Luiza Olindina Silva Alves, pronta para impressão em A4.",
+        content:
+          "Escala diária de enfermagem da I.L.P.I. Luiza Olindina Silva Alves, pronta para impressão em A4.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -103,7 +104,10 @@ function CensoPage() {
         .order("census_date", { ascending: false })
         .limit(20);
       if (error) throw error;
-      return (data ?? []).map((row) => ({ ...row, data: asCensusData(row.data) })) as NursingCensusRecord[];
+      return (data ?? []).map((row) => ({
+        ...row,
+        data: asCensusData(row.data),
+      })) as NursingCensusRecord[];
     },
   });
 
@@ -124,7 +128,9 @@ function CensoPage() {
         data: { rows },
         author_id: session.userId,
       };
-      const { error } = await supabase.from("nursing_census").upsert(payload, { onConflict: "census_date" });
+      const { error } = await supabase
+        .from("nursing_census")
+        .upsert(payload, { onConflict: "census_date" });
       if (error) throw error;
     },
     onSuccess: async () => {
@@ -132,7 +138,8 @@ function CensoPage() {
       await queryClient.invalidateQueries({ queryKey: ["nursing-census-history"] });
       toast.success("Censo de enfermagem salvo.");
     },
-    onError: (error) => toast.error(error instanceof Error ? error.message : "Não foi possível salvar."),
+    onError: (error) =>
+      toast.error(error instanceof Error ? error.message : "Não foi possível salvar."),
   });
 
   const remove = useMutation({
@@ -155,17 +162,17 @@ function CensoPage() {
       await queryClient.invalidateQueries({ queryKey: ["deletion-logs"] });
       toast.success("Censo excluído e registrado no histórico de exclusões.");
     },
-    onError: (error) => toast.error(error instanceof Error ? error.message : "Não foi possível excluir."),
+    onError: (error) =>
+      toast.error(error instanceof Error ? error.message : "Não foi possível excluir."),
   });
-
-
 
   if (loadingSession) return <Skeleton className="h-64 w-full" />;
 
   if (!allowed) {
     return (
       <div className="card-surface p-8 text-sm text-muted-foreground">
-        O Censo de Enfermagem é exclusivo das especialidades Enfermagem, Técnico de Enfermagem e Geriatria e da Direção.
+        O Censo de Enfermagem é exclusivo das especialidades Enfermagem, Técnico de Enfermagem e
+        Geriatria e da Direção.
       </div>
     );
   }
@@ -185,9 +192,10 @@ function CensoPage() {
         </span>
         <h1 className="font-display text-3xl font-semibold tracking-tight">Censo de Enfermagem</h1>
         <p className="max-w-3xl text-sm text-muted-foreground">
-          A escala do dia <strong className="text-foreground">{formatCensusDate(censusDate)}</strong> abre
-          automaticamente com todos os residentes listados nome por nome. Preencha os dados e baixe o documento em A4
-          paisagem com o timbre institucional.
+          A escala do dia{" "}
+          <strong className="text-foreground">{formatCensusDate(censusDate)}</strong> abre
+          automaticamente com todos os residentes listados nome por nome. Preencha os dados e baixe
+          o documento em A4 paisagem com o timbre institucional.
         </p>
       </header>
 
@@ -242,7 +250,9 @@ function CensoPage() {
               </colgroup>
               <thead className="bg-muted/60">
                 <tr>
-                  <th className="px-1 py-2 text-left font-semibold uppercase tracking-wide text-muted-foreground">Nº</th>
+                  <th className="px-1 py-2 text-left font-semibold uppercase tracking-wide text-muted-foreground">
+                    Nº
+                  </th>
                   <th className="px-2 py-2 text-left font-semibold uppercase tracking-wide text-muted-foreground">
                     Nome
                   </th>
@@ -279,7 +289,11 @@ function CensoPage() {
 
         <div className="flex flex-wrap gap-2">
           <Button onClick={() => save.mutate()} disabled={save.isPending}>
-            {save.isPending ? <Loader2 className="mr-2 size-4 animate-spin" /> : <Save className="mr-2 size-4" />}
+            {save.isPending ? (
+              <Loader2 className="mr-2 size-4 animate-spin" />
+            ) : (
+              <Save className="mr-2 size-4" />
+            )}
             Salvar censo do dia
           </Button>
           <Button
@@ -302,12 +316,17 @@ function CensoPage() {
         ) : (
           <ul className="space-y-3">
             {history.map((item) => (
-              <li key={item.id} className="card-surface flex flex-wrap items-center justify-between gap-3 p-4">
+              <li
+                key={item.id}
+                className="card-surface flex flex-wrap items-center justify-between gap-3 p-4"
+              >
                 <div>
-                  <p className="font-display text-base font-semibold">Censo de {formatCensusDate(item.census_date)}</p>
+                  <p className="font-display text-base font-semibold">
+                    Censo de {formatCensusDate(item.census_date)}
+                  </p>
                   <p className="text-xs text-muted-foreground">
-                    {item.nurse_name || "Sem responsável informado"} · {censusFilledCount(item.data.rows)} residentes
-                    preenchidos
+                    {item.nurse_name || "Sem responsável informado"} ·{" "}
+                    {censusFilledCount(item.data.rows)} residentes preenchidos
                   </p>
                 </div>
                 <div className="flex gap-2">
@@ -336,15 +355,19 @@ function CensoPage() {
                       </AlertDialogTrigger>
                       <AlertDialogContent>
                         <AlertDialogHeader>
-                          <AlertDialogTitle>Excluir o censo de {formatCensusDate(item.census_date)}?</AlertDialogTitle>
+                          <AlertDialogTitle>
+                            Excluir o censo de {formatCensusDate(item.census_date)}?
+                          </AlertDialogTitle>
                           <AlertDialogDescription>
-                            Esta ação é definitiva. A exclusão ficará registrada no histórico de exclusões com o seu
-                            nome, a data e a hora.
+                            Esta ação é definitiva. A exclusão ficará registrada no histórico de
+                            exclusões com o seu nome, a data e a hora.
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                           <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                          <AlertDialogAction onClick={() => remove.mutate(item)}>Excluir censo</AlertDialogAction>
+                          <AlertDialogAction onClick={() => remove.mutate(item)}>
+                            Excluir censo
+                          </AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>
                     </AlertDialog>

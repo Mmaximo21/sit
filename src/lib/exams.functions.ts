@@ -25,8 +25,11 @@ export const createExamUploadUrl = createServerFn({ method: "POST" })
       .slice(-120);
     const path = `${data.residentId}/${Date.now()}-${crypto.randomUUID().slice(0, 8)}-${safeName}`;
 
-    const { data: signed, error } = await supabaseAdmin.storage.from(BUCKET).createSignedUploadUrl(path);
-    if (error || !signed) throw new Error(error?.message ?? "Não foi possível preparar o envio do arquivo.");
+    const { data: signed, error } = await supabaseAdmin.storage
+      .from(BUCKET)
+      .createSignedUploadUrl(path);
+    if (error || !signed)
+      throw new Error(error?.message ?? "Não foi possível preparar o envio do arquivo.");
 
     return { path: signed.path, token: signed.token, uploadedBy: context.userId };
   });
@@ -34,7 +37,9 @@ export const createExamUploadUrl = createServerFn({ method: "POST" })
 /** Returns a temporary link to open/download an exam the caller is allowed to read. */
 export const getExamDownloadUrl = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: { examId: string }) => z.object({ examId: z.string().uuid() }).parse(input))
+  .inputValidator((input: { examId: string }) =>
+    z.object({ examId: z.string().uuid() }).parse(input),
+  )
   .handler(async ({ data, context }) => {
     const { data: exam, error } = await context.supabase
       .from("exam_files")
@@ -48,7 +53,8 @@ export const getExamDownloadUrl = createServerFn({ method: "POST" })
     const { data: signed, error: signError } = await supabaseAdmin.storage
       .from(BUCKET)
       .createSignedUrl(exam.file_path, 60 * 10, { download: exam.file_name });
-    if (signError || !signed) throw new Error(signError?.message ?? "Não foi possível gerar o link do arquivo.");
+    if (signError || !signed)
+      throw new Error(signError?.message ?? "Não foi possível gerar o link do arquivo.");
 
     return { url: signed.signedUrl, fileName: exam.file_name };
   });
@@ -56,7 +62,9 @@ export const getExamDownloadUrl = createServerFn({ method: "POST" })
 /** Deletes an exam record (own upload, or any when master) and removes the stored file. */
 export const deleteExam = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: { examId: string }) => z.object({ examId: z.string().uuid() }).parse(input))
+  .inputValidator((input: { examId: string }) =>
+    z.object({ examId: z.string().uuid() }).parse(input),
+  )
   .handler(async ({ data, context }) => {
     const { data: deleted, error } = await context.supabase
       .from("exam_files")

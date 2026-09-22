@@ -18,10 +18,14 @@ export const Route = createFileRoute("/_authenticated/avisos")({
       { title: "Avisos aos usuários — AGA ILPI" },
       {
         name: "description",
-        content: "Publique avisos importantes que ficam visíveis na tela de todos os usuários por 24 horas.",
+        content:
+          "Publique avisos importantes que ficam visíveis na tela de todos os usuários por 24 horas.",
       },
       { property: "og:title", content: "Avisos aos usuários — AGA ILPI" },
-      { property: "og:description", content: "Comunicados da administração visíveis por 24 horas." },
+      {
+        property: "og:description",
+        content: "Comunicados da administração visíveis por 24 horas.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -46,7 +50,10 @@ function AvisosPage() {
   const { data: notices } = useQuery({
     queryKey: ["notices", "all"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("notices").select("*").order("created_at", { ascending: false });
+      const { data, error } = await supabase
+        .from("notices")
+        .select("*")
+        .order("created_at", { ascending: false });
       if (error) throw error;
       return (data ?? []) as Notice[];
     },
@@ -59,7 +66,8 @@ function AvisosPage() {
   const publish = useMutation({
     mutationFn: async () => {
       if (!session) throw new Error("Sessão expirada.");
-      if (!title.trim() || !body.trim()) throw new Error("Preencha o título e a mensagem do aviso.");
+      if (!title.trim() || !body.trim())
+        throw new Error("Preencha o título e a mensagem do aviso.");
       const validHours = Math.min(Math.max(Number(hours) || 24, 1), 168);
       const { error } = await supabase.from("notices").insert({
         title: title.trim(),
@@ -112,8 +120,8 @@ function AvisosPage() {
           <Megaphone className="size-6" /> Avisos aos usuários
         </h1>
         <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-          O aviso aparece no topo da tela de todos os usuários conectados e desaparece automaticamente depois do prazo
-          definido (24 horas por padrão).
+          O aviso aparece no topo da tela de todos os usuários conectados e desaparece
+          automaticamente depois do prazo definido (24 horas por padrão).
         </p>
       </header>
 
@@ -185,12 +193,16 @@ function AvisosPage() {
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
                     <p className="text-sm font-semibold">{notice.title}</p>
-                    <Badge variant={active ? "default" : "secondary"}>{active ? "Na tela" : "Encerrado"}</Badge>
+                    <Badge variant={active ? "default" : "secondary"}>
+                      {active ? "Na tela" : "Encerrado"}
+                    </Badge>
                     <Badge variant="outline">
                       {LEVELS.find((l) => l.value === notice.level)?.label ?? notice.level}
                     </Badge>
                   </div>
-                  <p className="mt-1 whitespace-pre-wrap text-sm text-muted-foreground">{notice.body}</p>
+                  <p className="mt-1 whitespace-pre-wrap text-sm text-muted-foreground">
+                    {notice.body}
+                  </p>
                   <p className="mt-2 text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
                     {notice.created_by_name || "Administração"} · até{" "}
                     {new Date(notice.expires_at).toLocaleString("pt-BR")}

@@ -202,7 +202,12 @@ export const terapiaOcupacionalForm: FormSpec = {
         { type: "textarea", key: "imp_sintese", label: "Síntese da avaliação", rows: 4 },
         { type: "textarea", key: "imp_objetivos", label: "Objetivos terapêuticos", rows: 4 },
         { type: "textarea", key: "imp_condutas", label: "Condutas / intervenções", rows: 4 },
-        { type: "textarea", key: "imp_orientacoes", label: "Orientações à equipe / família", rows: 4 },
+        {
+          type: "textarea",
+          key: "imp_orientacoes",
+          label: "Orientações à equipe / família",
+          rows: 4,
+        },
         { type: "date", key: "imp_reavaliacao", label: "Data da reavaliação" },
       ],
     },

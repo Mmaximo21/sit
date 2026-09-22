@@ -44,7 +44,8 @@ export const Route = createFileRoute("/_authenticated/exames")({
       { property: "og:title", content: "Exames dos residentes — AGA ILPI" },
       {
         property: "og:description",
-        content: "Anexe PDFs, documentos e imagens de exames e consulte o histórico de cada residente.",
+        content:
+          "Anexe PDFs, documentos e imagens de exames e consulte o histórico de cada residente.",
       },
     ],
   }),
@@ -120,7 +121,13 @@ function ExamesPage() {
   const isCoordenacao = session?.isCoordenacao ?? false;
   const isMaster = (session?.isMaster ?? false) || isCoordenacao;
   const isCoordinator = (session?.isCoordinator ?? false) && !isMaster;
-  const scopeList = isCoordinator && session?.coordinatorScopes !== null ? (session?.coordinatorScopes ?? []) : [];
+  const scopeList = useMemo(
+    () =>
+      isCoordinator && session?.coordinatorScopes !== null
+        ? (session?.coordinatorScopes ?? [])
+        : [],
+    [isCoordinator, session?.coordinatorScopes],
+  );
   const effectiveSpecialty = isMaster ? specialty : (session?.specialty ?? "");
 
   const resetForm = () => {
@@ -199,18 +206,22 @@ function ExamesPage() {
       toast.success("Exame excluído.");
       queryClient.invalidateQueries({ queryKey: ["exam-files"] });
     },
-    onError: (error) => toast.error(error instanceof Error ? error.message : "Não foi possível excluir."),
+    onError: (error) =>
+      toast.error(error instanceof Error ? error.message : "Não foi possível excluir."),
   });
 
   const filtered = useMemo(() => {
     const term = norm(search.trim());
     return (exams ?? []).filter((exam) => {
-      const residentName = (exam as { residents?: { full_name?: string } }).residents?.full_name ?? "";
+      const residentName =
+        (exam as { residents?: { full_name?: string } }).residents?.full_name ?? "";
       const matchesTerm =
         !term || norm(residentName).includes(term) || norm(exam.title).includes(term);
       const matchesCategory = categoryFilter === "todos" || exam.category === categoryFilter;
       const matchesScope =
-        !isCoordinator || scopeList.length === 0 || (!!exam.specialty && scopeList.includes(exam.specialty));
+        !isCoordinator ||
+        scopeList.length === 0 ||
+        (!!exam.specialty && scopeList.includes(exam.specialty));
       return matchesTerm && matchesCategory && matchesScope;
     });
   }, [exams, search, categoryFilter, isCoordinator, scopeList]);
@@ -221,135 +232,137 @@ function ExamesPage() {
   return (
     <div className="space-y-8">
       <section className="relative overflow-hidden rounded-2xl bg-gradient-hero px-6 py-8 text-white shadow-soft sm:px-8">
-        <div className="pointer-events-none absolute inset-0 bg-grid-soft opacity-60" aria-hidden="true" />
+        <div
+          className="pointer-events-none absolute inset-0 bg-grid-soft opacity-60"
+          aria-hidden="true"
+        />
         <div className="relative">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-white/75">
             Área compartilhada
           </p>
           <h1 className="mt-1 font-display text-3xl font-semibold">Exames</h1>
           <p className="mt-2 max-w-2xl text-sm text-white/90">
-            Todas as especialidades podem anexar e consultar exames antigos e recentes de qualquer residente —
-            PDF, Word, planilhas, imagens e outros formatos.
+            Todas as especialidades podem anexar e consultar exames antigos e recentes de qualquer
+            residente — PDF, Word, planilhas, imagens e outros formatos.
           </p>
         </div>
       </section>
 
       {isCoordinator ? null : (
-      <section className="rounded-2xl border border-border bg-card p-6 shadow-soft">
-        <div className="flex items-center gap-3">
-          <span className="grid size-10 place-items-center rounded-xl bg-primary/10 text-primary">
-            <UploadCloud className="size-5" />
-          </span>
-          <div>
-            <h2 className="font-display text-xl font-semibold">Anexar exame</h2>
-            <p className="text-sm text-muted-foreground">
-              Selecione o residente, classifique como antigo ou recente e envie o arquivo.
-            </p>
-          </div>
-        </div>
-
-        <div className="mt-6 grid gap-4 md:grid-cols-2">
-          <div className="space-y-1.5">
-            <Label>Residente</Label>
-            <Select value={residentId} onValueChange={setResidentId}>
-              <SelectTrigger>
-                <SelectValue placeholder="Selecione pelo nome completo" />
-              </SelectTrigger>
-              <SelectContent>
-                {(residents ?? []).map((resident) => (
-                  <SelectItem key={resident.id} value={resident.id}>
-                    {resident.full_name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+        <section className="rounded-2xl border border-border bg-card p-6 shadow-soft">
+          <div className="flex items-center gap-3">
+            <span className="grid size-10 place-items-center rounded-xl bg-primary/10 text-primary">
+              <UploadCloud className="size-5" />
+            </span>
+            <div>
+              <h2 className="font-display text-xl font-semibold">Anexar exame</h2>
+              <p className="text-sm text-muted-foreground">
+                Selecione o residente, classifique como antigo ou recente e envie o arquivo.
+              </p>
+            </div>
           </div>
 
-          <div className="space-y-1.5">
-            <Label htmlFor="exam-title">Título do exame</Label>
-            <Input
-              id="exam-title"
-              value={title}
-              onChange={(event) => setTitle(event.target.value)}
-              placeholder="Ex.: Hemograma completo"
-            />
-          </div>
-
-          <div className="space-y-1.5">
-            <Label>Classificação</Label>
-            <Select value={category} onValueChange={setCategory}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="recente">Recente</SelectItem>
-                <SelectItem value="antigo">Antigo</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-1.5">
-            <Label htmlFor="exam-date">Data do exame</Label>
-            <Input
-              id="exam-date"
-              type="date"
-              value={examDate}
-              onChange={(event) => setExamDate(event.target.value)}
-            />
-          </div>
-
-          {isMaster ? (
+          <div className="mt-6 grid gap-4 md:grid-cols-2">
             <div className="space-y-1.5">
-              <Label>Especialidade responsável</Label>
-              <Select value={specialty} onValueChange={setSpecialty}>
+              <Label>Residente</Label>
+              <Select value={residentId} onValueChange={setResidentId}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Selecione (opcional)" />
+                  <SelectValue placeholder="Selecione pelo nome completo" />
                 </SelectTrigger>
                 <SelectContent>
-                  {specialtyNames.map((name) => (
-                    <SelectItem key={name} value={name}>
-                      {name}
+                  {(residents ?? []).map((resident) => (
+                    <SelectItem key={resident.id} value={resident.id}>
+                      {resident.full_name}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
-          ) : null}
 
-          <div className="space-y-1.5">
-            <Label htmlFor="exam-file">Arquivo</Label>
-            <Input
-              id="exam-file"
-              ref={fileInputRef}
-              type="file"
-              onChange={(event) => setFile(event.target.files?.[0] ?? null)}
-            />
-            <p className="text-xs text-muted-foreground">
-              Qualquer formato (PDF, DOC, DOCX, XLS, JPG, PNG…), até 25 MB.
-            </p>
+            <div className="space-y-1.5">
+              <Label htmlFor="exam-title">Título do exame</Label>
+              <Input
+                id="exam-title"
+                value={title}
+                onChange={(event) => setTitle(event.target.value)}
+                placeholder="Ex.: Hemograma completo"
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <Label>Classificação</Label>
+              <Select value={category} onValueChange={setCategory}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="recente">Recente</SelectItem>
+                  <SelectItem value="antigo">Antigo</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-1.5">
+              <Label htmlFor="exam-date">Data do exame</Label>
+              <Input
+                id="exam-date"
+                type="date"
+                value={examDate}
+                onChange={(event) => setExamDate(event.target.value)}
+              />
+            </div>
+
+            {isMaster ? (
+              <div className="space-y-1.5">
+                <Label>Especialidade responsável</Label>
+                <Select value={specialty} onValueChange={setSpecialty}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione (opcional)" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {specialtyNames.map((name) => (
+                      <SelectItem key={name} value={name}>
+                        {name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            ) : null}
+
+            <div className="space-y-1.5">
+              <Label htmlFor="exam-file">Arquivo</Label>
+              <Input
+                id="exam-file"
+                ref={fileInputRef}
+                type="file"
+                onChange={(event) => setFile(event.target.files?.[0] ?? null)}
+              />
+              <p className="text-xs text-muted-foreground">
+                Qualquer formato (PDF, DOC, DOCX, XLS, JPG, PNG…), até 25 MB.
+              </p>
+            </div>
+
+            <div className="space-y-1.5 md:col-span-2">
+              <Label htmlFor="exam-notes">Observações</Label>
+              <Textarea
+                id="exam-notes"
+                value={notes}
+                onChange={(event) => setNotes(event.target.value)}
+                placeholder="Contexto clínico, laboratório, alterações relevantes…"
+                rows={3}
+              />
+            </div>
           </div>
 
-          <div className="space-y-1.5 md:col-span-2">
-            <Label htmlFor="exam-notes">Observações</Label>
-            <Textarea
-              id="exam-notes"
-              value={notes}
-              onChange={(event) => setNotes(event.target.value)}
-              placeholder="Contexto clínico, laboratório, alterações relevantes…"
-              rows={3}
-            />
+          <div className="mt-5 flex justify-end">
+            <Button onClick={upload} disabled={uploading}>
+              <Paperclip className="mr-2 size-4" />
+              {uploading ? "Enviando…" : "Anexar exame"}
+            </Button>
           </div>
-        </div>
-
-        <div className="mt-5 flex justify-end">
-          <Button onClick={upload} disabled={uploading}>
-            <Paperclip className="mr-2 size-4" />
-            {uploading ? "Enviando…" : "Anexar exame"}
-          </Button>
-        </div>
-      </section>
+        </section>
       )}
-
 
       <section className="rounded-2xl border border-border bg-card shadow-soft">
         <div className="flex flex-wrap items-center gap-3 border-b border-border p-4">
@@ -397,7 +410,8 @@ function ExamesPage() {
           <ul className="divide-y divide-border">
             {filtered.map((exam) => {
               const residentName =
-                (exam as { residents?: { full_name?: string } }).residents?.full_name ?? "Residente";
+                (exam as { residents?: { full_name?: string } }).residents?.full_name ??
+                "Residente";
               return (
                 <li key={exam.id} className="flex flex-wrap items-center gap-3 p-4">
                   <div className="min-w-56 flex-1">
@@ -414,7 +428,9 @@ function ExamesPage() {
                       {exam.category === "recente" ? "Recente" : "Antigo"}
                     </Badge>
                     {exam.specialty ? <Badge variant="outline">{exam.specialty}</Badge> : null}
-                    <span className="text-xs text-muted-foreground">{formatDate(exam.exam_date)}</span>
+                    <span className="text-xs text-muted-foreground">
+                      {formatDate(exam.exam_date)}
+                    </span>
                     <Button variant="ghost" size="sm" onClick={() => download(exam.id)}>
                       <Download className="mr-1 size-4" /> Baixar
                     </Button>
@@ -457,7 +473,6 @@ function ExamesPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-
     </div>
   );
 }

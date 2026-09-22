@@ -10,7 +10,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { KeyRound, Trash2, UserPlus } from "lucide-react";
 import { toast } from "sonner";
 
@@ -18,7 +24,10 @@ export const Route = createFileRoute("/_authenticated/usuarios")({
   head: () => ({
     meta: [
       { title: "Usuários — AGA ILPI" },
-      { name: "description", content: "Cadastro de profissionais por especialidade e redefinição de senhas." },
+      {
+        name: "description",
+        content: "Cadastro de profissionais por especialidade e redefinição de senhas.",
+      },
       { property: "og:title", content: "Usuários — AGA ILPI" },
       { property: "og:description", content: "Painel master de gestão de acessos." },
     ],
@@ -62,12 +71,15 @@ function UsuariosPage() {
       const username = form.username.trim().toLowerCase();
       if (fullName.length < 2) throw new Error("Informe o nome completo do profissional.");
       if (!/^[a-z0-9._-]{3,30}$/.test(username))
-        throw new Error("Login inválido: use 3 a 30 caracteres, apenas letras, números, ponto, hífen ou underline (sem espaços ou acentos).");
+        throw new Error(
+          "Login inválido: use 3 a 30 caracteres, apenas letras, números, ponto, hífen ou underline (sem espaços ou acentos).",
+        );
       if (form.password.length < 6) throw new Error("A senha deve ter ao menos 6 caracteres.");
       if (!form.specialty) throw new Error("Selecione a especialidade.");
 
       const { data: sessionData } = await supabase.auth.getSession();
-      if (!sessionData.session) throw new Error("Sua sessão expirou. Saia e entre novamente para criar usuários.");
+      if (!sessionData.session)
+        throw new Error("Sua sessão expirou. Saia e entre novamente para criar usuários.");
 
       return create({
         data: {
@@ -95,7 +107,6 @@ function UsuariosPage() {
     },
   });
 
-
   const isCoordenacao = session?.isCoordenacao ?? false;
   const isMaster = (session?.isMaster ?? false) || isCoordenacao;
   const canDeleteUsers = session?.isMaster ?? false;
@@ -121,51 +132,60 @@ function UsuariosPage() {
       </div>
 
       {isMaster ? (
-      <div className="rounded-xl border border-border bg-card p-5 shadow-sm">
-        <h2 className="font-display text-lg font-semibold">Novo profissional</h2>
-        <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <Field label="Nome completo">
-            <Input value={form.fullName} onChange={(e) => setForm({ ...form, fullName: e.target.value })} />
-          </Field>
-          <Field label="Usuário (login)">
-            <Input
-              value={form.username}
-              onChange={(e) => setForm({ ...form, username: e.target.value })}
-              placeholder="ex: nutricao"
-            />
-          </Field>
-          <Field label="Senha">
-            <Input
-              type="text"
-              value={form.password}
-              onChange={(e) => setForm({ ...form, password: e.target.value })}
-              placeholder="mínimo 6 caracteres"
-            />
-          </Field>
-          <Field label="Especialidade">
-            <Select value={form.specialty} onValueChange={(v) => setForm({ ...form, specialty: v })}>
-              <SelectTrigger>
-                <SelectValue placeholder="Selecione" />
-              </SelectTrigger>
-              <SelectContent>
-                {specialtyNames.map((s) => (
-                  <SelectItem key={s} value={s}>
-                    {s}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </Field>
-          <Field label="Registro profissional (opcional)">
-            <Input value={form.registry} onChange={(e) => setForm({ ...form, registry: e.target.value })} />
-          </Field>
-          <div className="flex items-end">
-            <Button onClick={() => createMutation.mutate()} disabled={createMutation.isPending}>
-              <UserPlus className="mr-2 size-4" /> Criar usuário
-            </Button>
+        <div className="rounded-xl border border-border bg-card p-5 shadow-sm">
+          <h2 className="font-display text-lg font-semibold">Novo profissional</h2>
+          <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <Field label="Nome completo">
+              <Input
+                value={form.fullName}
+                onChange={(e) => setForm({ ...form, fullName: e.target.value })}
+              />
+            </Field>
+            <Field label="Usuário (login)">
+              <Input
+                value={form.username}
+                onChange={(e) => setForm({ ...form, username: e.target.value })}
+                placeholder="ex: nutricao"
+              />
+            </Field>
+            <Field label="Senha">
+              <Input
+                type="text"
+                value={form.password}
+                onChange={(e) => setForm({ ...form, password: e.target.value })}
+                placeholder="mínimo 6 caracteres"
+              />
+            </Field>
+            <Field label="Especialidade">
+              <Select
+                value={form.specialty}
+                onValueChange={(v) => setForm({ ...form, specialty: v })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione" />
+                </SelectTrigger>
+                <SelectContent>
+                  {specialtyNames.map((s) => (
+                    <SelectItem key={s} value={s}>
+                      {s}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </Field>
+            <Field label="Registro profissional (opcional)">
+              <Input
+                value={form.registry}
+                onChange={(e) => setForm({ ...form, registry: e.target.value })}
+              />
+            </Field>
+            <div className="flex items-end">
+              <Button onClick={() => createMutation.mutate()} disabled={createMutation.isPending}>
+                <UserPlus className="mr-2 size-4" /> Criar usuário
+              </Button>
+            </div>
           </div>
         </div>
-      </div>
       ) : null}
 
       <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
@@ -184,7 +204,11 @@ function UsuariosPage() {
                 <td className="px-4 py-3 font-medium">{u.full_name || "—"}</td>
                 <td className="px-4 py-3 text-muted-foreground">{u.username}</td>
                 <td className="px-4 py-3">
-                  {u.isMaster ? <Badge>Master</Badge> : <span className="text-muted-foreground">{u.specialty}</span>}
+                  {u.isMaster ? (
+                    <Badge>Master</Badge>
+                  ) : (
+                    <span className="text-muted-foreground">{u.specialty}</span>
+                  )}
                 </td>
                 <td className="px-4 py-3">
                   <div className="flex justify-end gap-1">
@@ -198,7 +222,9 @@ function UsuariosPage() {
                           await reset({ data: { userId: u.id, password } });
                           toast.success("Senha redefinida.");
                         } catch (error) {
-                          toast.error(error instanceof Error ? error.message : "Erro ao redefinir.");
+                          toast.error(
+                            error instanceof Error ? error.message : "Erro ao redefinir.",
+                          );
                         }
                       }}
                     >
@@ -216,7 +242,9 @@ function UsuariosPage() {
                             toast.success("Usuário excluído.");
                             queryClient.invalidateQueries({ queryKey: ["users"] });
                           } catch (error) {
-                            toast.error(error instanceof Error ? error.message : "Erro ao excluir.");
+                            toast.error(
+                              error instanceof Error ? error.message : "Erro ao excluir.",
+                            );
                           }
                         }}
                       >

@@ -65,7 +65,11 @@ export const fisioterapiaForm: FormSpec = {
           "Transferir-se",
           "Locomove-se da cama para a cadeira e vice-versa.",
         ),
-        katz("katz_miccao", "Controle esfincteriano — Micção", "Controle da micção; uso de fralda ou cateter."),
+        katz(
+          "katz_miccao",
+          "Controle esfincteriano — Micção",
+          "Controle da micção; uso de fralda ou cateter.",
+        ),
         katz(
           "katz_evacuacao",
           "Controle esfincteriano — Evacuação",
@@ -82,7 +86,12 @@ export const fisioterapiaForm: FormSpec = {
           label: "Classificação final (Katz)",
           options: ["Independente", "Dependência parcial", "Dependente"],
         },
-        { type: "textarea", key: "katz_obs", label: "Observações sobre a funcionalidade global", rows: 4 },
+        {
+          type: "textarea",
+          key: "katz_obs",
+          label: "Observações sobre a funcionalidade global",
+          rows: 4,
+        },
       ],
     },
     {
@@ -173,7 +182,10 @@ export const fisioterapiaForm: FormSpec = {
 
         { type: "note", key: "amb_nota_cozinha", label: "Cozinha" },
         risco("amb_coz_armarios", "Armários baixos, sem necessidade de uso de escada"),
-        risco("amb_coz_pia", "Pia sem vazamentos e que permite entrada de cadeira de rodas se necessário"),
+        risco(
+          "amb_coz_pia",
+          "Pia sem vazamentos e que permite entrada de cadeira de rodas se necessário",
+        ),
 
         { type: "note", key: "amb_nota_escada", label: "Escada" },
         risco(
@@ -182,11 +194,22 @@ export const fisioterapiaForm: FormSpec = {
         ),
         risco("amb_esc_corrimao_bilateral", "Corrimão bilateral"),
         risco("amb_esc_corrimao_solido", "Corrimão sólido"),
-        risco("amb_esc_corrimao_prolonga", "Corrimão que se prolonga além do primeiro e do último degraus"),
+        risco(
+          "amb_esc_corrimao_prolonga",
+          "Corrimão que se prolonga além do primeiro e do último degraus",
+        ),
         risco("amb_esc_espelho", "Espelho do degrau fechado, com lixas antiderrapantes"),
-        risco("amb_esc_uniformidade", "Uniformidade dos degraus: altura dos espelhos e profundidade constantes"),
+        risco(
+          "amb_esc_uniformidade",
+          "Uniformidade dos degraus: altura dos espelhos e profundidade constantes",
+        ),
 
-        { type: "textarea", key: "amb_obs", label: "Observações / adequações recomendadas", rows: 4 },
+        {
+          type: "textarea",
+          key: "amb_obs",
+          label: "Observações / adequações recomendadas",
+          rows: 4,
+        },
       ],
     },
     closingSection("Termo de Encerramento e Assinaturas"),

@@ -18,7 +18,7 @@ const OFFICIAL: Record<string, FormSpec> = {
   Fisioterapia: fisioterapiaForm,
   "Terapia Ocupacional": terapiaOcupacionalForm,
   Fonoaudiologia: fonoaudiologiaForm,
-  "Fonoaudióloga": fonoaudiologiaForm,
+  Fonoaudióloga: fonoaudiologiaForm,
 };
 
 export function getFormSpec(specialty: string): FormSpec {

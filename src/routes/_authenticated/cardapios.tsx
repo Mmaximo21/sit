@@ -50,7 +50,8 @@ export const Route = createFileRoute("/_authenticated/cardapios")({
       { property: "og:title", content: "Cardápios e cálculo calórico — AGA ILPI" },
       {
         property: "og:description",
-        content: "Cálculo calórico por refeição com macros, micros e percentual dos valores diários.",
+        content:
+          "Cálculo calórico por refeição com macros, micros e percentual dos valores diários.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -152,8 +153,8 @@ function CardapiosPage() {
         </span>
         <h1 className="font-display mt-4 text-xl font-semibold">Acesso restrito</h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          A aba Cardápios é exclusiva da especialidade Nutrição, das contas Administrador e da coordenação
-          técnica responsável pela Nutrição.
+          A aba Cardápios é exclusiva da especialidade Nutrição, das contas Administrador e da
+          coordenação técnica responsável pela Nutrição.
         </p>
       </div>
     );
@@ -193,7 +194,13 @@ function CardapiosPage() {
         <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end">
           <div className="space-y-2">
             <Label>Residente</Label>
-            <Select value={residentId} onValueChange={(v) => { setResidentId(v); setOpenId(null); }}>
+            <Select
+              value={residentId}
+              onValueChange={(v) => {
+                setResidentId(v);
+                setOpenId(null);
+              }}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Selecione o residente" />
               </SelectTrigger>
@@ -276,9 +283,7 @@ function CardapiosPage() {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => pendingDelete && removeMenu.mutate(pendingDelete.id)}
-            >
+            <AlertDialogAction onClick={() => pendingDelete && removeMenu.mutate(pendingDelete.id)}>
               Excluir
             </AlertDialogAction>
           </AlertDialogFooter>

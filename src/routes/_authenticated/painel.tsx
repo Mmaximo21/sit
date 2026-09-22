@@ -51,7 +51,10 @@ export const Route = createFileRoute("/_authenticated/painel")({
   head: () => ({
     meta: [
       { title: "Avaliações — AGA ILPI" },
-      { name: "description", content: "Acompanhe, preencha e envie as avaliações da sua especialidade." },
+      {
+        name: "description",
+        content: "Acompanhe, preencha e envie as avaliações da sua especialidade.",
+      },
       { property: "og:title", content: "Avaliações — AGA ILPI" },
       { property: "og:description", content: "Painel de avaliações AGA por especialidade." },
     ],
@@ -74,11 +77,12 @@ function Painel() {
 
   // Supervisor Administrativo acessa apenas o Relatório de Plantão.
   const shiftOnly =
-    session?.specialty === "Supervisor Administrativo" && !session?.isMaster && !session?.isCoordinator;
+    session?.specialty === "Supervisor Administrativo" &&
+    !session?.isMaster &&
+    !session?.isCoordinator;
   useEffect(() => {
     if (shiftOnly) navigate({ to: "/plantao", replace: true });
   }, [shiftOnly, navigate]);
-
 
   const { data: period } = useQuery({
     queryKey: ["current-period"],
@@ -159,7 +163,8 @@ function Painel() {
       toast.success("Residente cadastrado.");
       queryClient.invalidateQueries({ queryKey: ["residents"] });
     },
-    onError: (error) => toast.error(error instanceof Error ? error.message : "Erro ao cadastrar residente."),
+    onError: (error) =>
+      toast.error(error instanceof Error ? error.message : "Erro ao cadastrar residente."),
   });
 
   const create = useMutation({
@@ -206,10 +211,14 @@ function Painel() {
       setResidentId("");
       setConfirmOpen(false);
       queryClient.invalidateQueries({ queryKey: ["assessments"] });
-      if (carried) toast.success("Dados do ciclo anterior deste residente foram carregados. Revise e atualize.");
+      if (carried)
+        toast.success(
+          "Dados do ciclo anterior deste residente foram carregados. Revise e atualize.",
+        );
       navigate({ to: "/avaliacao/$id", params: { id } });
     },
-    onError: (error) => toast.error(error instanceof Error ? error.message : "Erro ao criar avaliação."),
+    onError: (error) =>
+      toast.error(error instanceof Error ? error.message : "Erro ao criar avaliação."),
   });
 
   const removeResident = useMutation({
@@ -222,7 +231,8 @@ function Painel() {
       toast.success("Residente excluído.");
       queryClient.invalidateQueries({ queryKey: ["residents"] });
     },
-    onError: (error) => toast.error(error instanceof Error ? error.message : "Erro ao excluir residente."),
+    onError: (error) =>
+      toast.error(error instanceof Error ? error.message : "Erro ao excluir residente."),
   });
 
   const remove = useMutation({
@@ -236,7 +246,6 @@ function Painel() {
     },
     onError: (error) => toast.error(error instanceof Error ? error.message : "Erro ao excluir."),
   });
-
 
   const visible = assessments ?? [];
   const counts = {
@@ -255,12 +264,16 @@ function Painel() {
   const filtered = visible.filter((a) => {
     if (statusFilter !== "todos" && a.status !== statusFilter) return false;
     if (specFilter !== "todas" && a.specialty !== specFilter) return false;
-    if (search.trim() && !normalize(a.resident_name ?? "").includes(normalize(search.trim()))) return false;
+    if (search.trim() && !normalize(a.resident_name ?? "").includes(normalize(search.trim())))
+      return false;
     return true;
   });
 
-  const deadlineDate = deadline ? new Date(deadline.length === 10 ? `${deadline}T23:59:59` : deadline) : null;
-  const startOfDay = (date: Date) => new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime();
+  const deadlineDate = deadline
+    ? new Date(deadline.length === 10 ? `${deadline}T23:59:59` : deadline)
+    : null;
+  const startOfDay = (date: Date) =>
+    new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime();
   const daysLeft = deadlineDate
     ? Math.round((startOfDay(deadlineDate) - startOfDay(new Date())) / 86_400_000)
     : null;
@@ -269,7 +282,9 @@ function Painel() {
   const pendingCount = visible.filter((a) => a.status === "rascunho").length;
 
   const deadlineFor = (spec: string) =>
-    (period?.period_deadlines ?? []).find((d) => d.specialty === spec)?.due_date ?? period?.due_date ?? null;
+    (period?.period_deadlines ?? []).find((d) => d.specialty === spec)?.due_date ??
+    period?.due_date ??
+    null;
 
   const pendingBySpecialty = Object.entries(
     visible
@@ -283,7 +298,6 @@ function Painel() {
     .map(([spec, count]) => ({ spec, count, due: deadlineFor(spec) }))
     .sort((a, b) => a.spec.localeCompare(b.spec, "pt-BR"));
 
-
   useEffect(() => {
     if (!periodOpen || daysLeft === null || daysLeft > 5 || daysLeft < 0 || !period?.id) return;
     const key = `aga-deadline-alert:${period.id}:${targetSpecialty || "geral"}:${new Date().toDateString()}`;
@@ -291,9 +305,6 @@ function Painel() {
     window.localStorage.setItem(key, "1");
     setDeadlineAlertOpen(true);
   }, [periodOpen, daysLeft, period?.id, targetSpecialty]);
-
-
-
 
   return (
     <div className="space-y-8">
@@ -346,7 +357,6 @@ function Painel() {
                     : `Faltam ${daysLeft} dia(s)`}
               </p>
             ) : null}
-
           </div>
         </div>
       </section>
@@ -376,7 +386,6 @@ function Painel() {
           </div>
         ))}
       </section>
-
 
       {isMaster ? (
         <div className="animate-rise card-surface rounded-2xl border border-border p-5 shadow-soft transition-shadow duration-300 hover:shadow-elevated sm:p-6">
@@ -425,13 +434,19 @@ function Painel() {
                 </SelectContent>
               </Select>
             </div>
-            <Button variant="outline" onClick={() => createResident.mutate()} disabled={createResident.isPending}>
+            <Button
+              variant="outline"
+              onClick={() => createResident.mutate()}
+              disabled={createResident.isPending}
+            >
               <UserPlus className="mr-2 size-4" /> Cadastrar residente
             </Button>
           </div>
 
           <div className="mt-6">
-            <h3 className="text-sm font-medium">Residentes cadastrados ({(residents ?? []).length})</h3>
+            <h3 className="text-sm font-medium">
+              Residentes cadastrados ({(residents ?? []).length})
+            </h3>
             <ul className="mt-3 max-h-80 divide-y divide-border overflow-y-auto rounded-xl border border-border">
               {(residents ?? []).map((r) => (
                 <li
@@ -452,7 +467,11 @@ function Painel() {
                     className="text-destructive hover:text-destructive"
                     disabled={removeResident.isPending}
                     onClick={() => {
-                      if (confirm(`Excluir o residente ${r.full_name}? As avaliações vinculadas permanecerão.`))
+                      if (
+                        confirm(
+                          `Excluir o residente ${r.full_name}? As avaliações vinculadas permanecerão.`,
+                        )
+                      )
                         removeResident.mutate(r.id);
                     }}
                   >
@@ -461,12 +480,13 @@ function Painel() {
                 </li>
               ))}
               {(residents ?? []).length === 0 ? (
-                <li className="px-3 py-4 text-center text-sm text-muted-foreground">Nenhum residente cadastrado.</li>
+                <li className="px-3 py-4 text-center text-sm text-muted-foreground">
+                  Nenhum residente cadastrado.
+                </li>
               ) : null}
             </ul>
           </div>
         </div>
-
       ) : null}
 
       {(periodOpen || isMaster) && canCreateAssessments ? (
@@ -500,7 +520,9 @@ function Painel() {
               {selectedResident ? (
                 <p className="animate-fade-in flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
                   <Badge variant="outline" className="font-normal">
-                    {selectedResident.birth_date ? formatDate(selectedResident.birth_date) : "sem nascimento"}
+                    {selectedResident.birth_date
+                      ? formatDate(selectedResident.birth_date)
+                      : "sem nascimento"}
                   </Badge>
                   <Badge variant="outline" className="font-normal">
                     {ageFromBirthDate(selectedResident.birth_date) || "idade —"}
@@ -554,15 +576,14 @@ function Painel() {
         </div>
       ) : isCoordinator ? (
         <div className="animate-rise flex items-center gap-3 rounded-2xl border border-border bg-muted/50 p-5 text-sm text-muted-foreground">
-          <Lock className="size-4" /> Perfil de coordenação: consulta e download das avaliações enviadas, sem criar,
-          editar ou excluir registros.
+          <Lock className="size-4" /> Perfil de coordenação: consulta e download das avaliações
+          enviadas, sem criar, editar ou excluir registros.
         </div>
       ) : (
         <div className="animate-rise flex items-center gap-3 rounded-2xl border border-border bg-muted/50 p-5 text-sm text-muted-foreground">
           <Lock className="size-4" /> O ciclo está fechado. Não é possível criar novas avaliações.
         </div>
       )}
-
 
       <AlertDialog open={deadlineAlertOpen} onOpenChange={setDeadlineAlertOpen}>
         <AlertDialogContent className="border-warning/40">
@@ -578,8 +599,13 @@ function Painel() {
             <AlertDialogDescription asChild>
               <div className="space-y-3 text-center text-sm">
                 <p>
-                  O ciclo <span className="font-medium text-foreground">{period?.title ?? "atual"}</span> encerra em{" "}
-                  <span className="font-medium text-foreground">{deadline ? formatDate(deadline) : "—"}</span>.
+                  O ciclo{" "}
+                  <span className="font-medium text-foreground">{period?.title ?? "atual"}</span>{" "}
+                  encerra em{" "}
+                  <span className="font-medium text-foreground">
+                    {deadline ? formatDate(deadline) : "—"}
+                  </span>
+                  .
                 </p>
                 <p>
                   {pendingCount > 0
@@ -593,7 +619,10 @@ function Painel() {
                       <span>Rascunhos · prazo</span>
                     </div>
                     {pendingBySpecialty.map((item) => (
-                      <div key={item.spec} className="flex items-center justify-between gap-3 px-3 py-2">
+                      <div
+                        key={item.spec}
+                        className="flex items-center justify-between gap-3 px-3 py-2"
+                      >
                         <span className="font-medium text-foreground">{item.spec}</span>
                         <span className="text-xs text-muted-foreground">
                           <span className="font-semibold text-warning">{item.count}</span> ·{" "}
@@ -603,7 +632,6 @@ function Painel() {
                     ))}
                   </div>
                 )}
-
               </div>
             </AlertDialogDescription>
           </AlertDialogHeader>
@@ -615,11 +643,12 @@ function Painel() {
         </AlertDialogContent>
       </AlertDialog>
 
-
       <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle className="font-display">Confirmar novo preenchimento</AlertDialogTitle>
+            <AlertDialogTitle className="font-display">
+              Confirmar novo preenchimento
+            </AlertDialogTitle>
             <AlertDialogDescription asChild>
               <div className="space-y-3 text-sm">
                 <p>Será criada uma nova avaliação com os dados abaixo:</p>
@@ -629,8 +658,10 @@ function Painel() {
                     {selectedResident?.full_name ?? "—"}
                   </p>
                   <p className="mt-1 text-xs text-muted-foreground">
-                    {selectedResident?.birth_date ? formatDate(selectedResident.birth_date) : "sem nascimento"} ·{" "}
-                    {ageFromBirthDate(selectedResident?.birth_date ?? null) || "idade —"} ·{" "}
+                    {selectedResident?.birth_date
+                      ? formatDate(selectedResident.birth_date)
+                      : "sem nascimento"}{" "}
+                    · {ageFromBirthDate(selectedResident?.birth_date ?? null) || "idade —"} ·{" "}
                     {selectedResident?.sex ?? "sexo —"}
                   </p>
                   <p className="mt-2 flex items-center gap-2 text-xs">
@@ -649,7 +680,6 @@ function Painel() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-
 
       <div className="animate-rise overflow-hidden rounded-2xl border border-border bg-card shadow-soft">
         <div className="flex flex-wrap items-center gap-3 border-b border-border p-4">
@@ -681,7 +711,10 @@ function Painel() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="todas">Todas as especialidades</SelectItem>
-                {(isCoordinator && scopeList.length ? specialtyNames.filter((n) => scopeList.includes(n)) : specialtyNames).map((s) => (
+                {(isCoordinator && scopeList.length
+                  ? specialtyNames.filter((n) => scopeList.includes(n))
+                  : specialtyNames
+                ).map((s) => (
                   <SelectItem key={s} value={s}>
                     {s}
                   </SelectItem>
@@ -700,97 +733,113 @@ function Painel() {
             ))}
           </div>
         ) : (
-        <table className="w-full text-sm">
-          <thead className="bg-muted/60 text-left text-xs uppercase tracking-wide text-muted-foreground">
-            <tr>
-              <th className="px-4 py-3">Residente</th>
-              <th className="px-4 py-3">Especialidade</th>
-              <th className="px-4 py-3">Situação</th>
-              <th className="px-4 py-3">Atualizado</th>
-              <th className="px-4 py-3" />
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.map((a) => (
-              <tr
-                key={a.id}
-                className="border-t border-border transition-colors duration-200 hover:bg-muted/40"
-              >
-                <td className="px-4 py-3 font-medium">{a.resident_name || "Sem nome"}</td>
-                <td className="px-4 py-3 text-muted-foreground">{a.specialty}</td>
-                <td className="px-4 py-3">
-                  <Badge variant={a.status === "fechado" ? "secondary" : a.status === "enviado" ? "default" : "outline"}>
-                    {STATUS_LABEL[a.status] ?? a.status}
-                  </Badge>
-                </td>
-                <td className="px-4 py-3 text-muted-foreground">{formatDate(a.updated_at)}</td>
-                <td className="px-4 py-3">
-                  <div className="flex items-center justify-end gap-3">
-                    <Link to="/avaliacao/$id" params={{ id: a.id }} className="font-medium text-primary hover:underline">
-                      Abrir
-                    </Link>
-                    {isMaster || isCoordinator ? (
-                      <>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          aria-label="Baixar .docx"
-                          onClick={() =>
-                            downloadAssessmentDocx(
-                              {
-                                id: a.id,
-                                specialty: a.specialty,
-                                resident_name: a.resident_name,
-                                status: STATUS_LABEL[a.status] ?? a.status,
-                                master_notes: a.master_notes,
-                                closed_at: a.closed_at,
-                                data: (a.data as Record<string, unknown>) ?? {},
-                                admission_date: a.admission_date,
-                                diagnosis: a.diagnosis,
-                              },
-                              getFormSpec(a.specialty),
-                            ).catch(() => toast.error("Não foi possível gerar o arquivo."))
-                          }
-                        >
-                          <FileDown className="size-4" />
-                        </Button>
-                        {canDeleteRecords ? (
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          aria-label="Excluir avaliação"
-                          className="text-destructive hover:text-destructive"
-                          onClick={() => {
-                            if (confirm(`Excluir a avaliação de ${a.resident_name || "residente"}?`))
-                              remove.mutate(a.id);
-                          }}
-                        >
-                          <Trash2 className="size-4" />
-                        </Button>
-                        ) : null}
-                      </>
-                    ) : null}
-                  </div>
-                </td>
-              </tr>
-            ))}
-            {filtered.length === 0 ? (
+          <table className="w-full text-sm">
+            <thead className="bg-muted/60 text-left text-xs uppercase tracking-wide text-muted-foreground">
               <tr>
-                <td colSpan={5} className="px-4 py-12 text-center">
-                  <ClipboardList className="mx-auto size-8 text-muted-foreground/50" />
-                  <p className="mt-3 font-medium">Nenhuma avaliação encontrada</p>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    {visible.length
-                      ? "Ajuste a busca ou os filtros para ver outros registros."
-                      : isCoordinator
-                        ? "Ainda não há avaliações enviadas nas especialidades sob sua coordenação."
-                        : "Selecione um residente acima para iniciar o primeiro preenchimento."}
-                  </p>
-                </td>
+                <th className="px-4 py-3">Residente</th>
+                <th className="px-4 py-3">Especialidade</th>
+                <th className="px-4 py-3">Situação</th>
+                <th className="px-4 py-3">Atualizado</th>
+                <th className="px-4 py-3" />
               </tr>
-            ) : null}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {filtered.map((a) => (
+                <tr
+                  key={a.id}
+                  className="border-t border-border transition-colors duration-200 hover:bg-muted/40"
+                >
+                  <td className="px-4 py-3 font-medium">{a.resident_name || "Sem nome"}</td>
+                  <td className="px-4 py-3 text-muted-foreground">{a.specialty}</td>
+                  <td className="px-4 py-3">
+                    <Badge
+                      variant={
+                        a.status === "fechado"
+                          ? "secondary"
+                          : a.status === "enviado"
+                            ? "default"
+                            : "outline"
+                      }
+                    >
+                      {STATUS_LABEL[a.status] ?? a.status}
+                    </Badge>
+                  </td>
+                  <td className="px-4 py-3 text-muted-foreground">{formatDate(a.updated_at)}</td>
+                  <td className="px-4 py-3">
+                    <div className="flex items-center justify-end gap-3">
+                      <Link
+                        to="/avaliacao/$id"
+                        params={{ id: a.id }}
+                        className="font-medium text-primary hover:underline"
+                      >
+                        Abrir
+                      </Link>
+                      {isMaster || isCoordinator ? (
+                        <>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            aria-label="Baixar .docx"
+                            onClick={() =>
+                              downloadAssessmentDocx(
+                                {
+                                  id: a.id,
+                                  specialty: a.specialty,
+                                  resident_name: a.resident_name,
+                                  status: STATUS_LABEL[a.status] ?? a.status,
+                                  master_notes: a.master_notes,
+                                  closed_at: a.closed_at,
+                                  data: (a.data as Record<string, unknown>) ?? {},
+                                  admission_date: a.admission_date,
+                                  diagnosis: a.diagnosis,
+                                },
+                                getFormSpec(a.specialty),
+                              ).catch(() => toast.error("Não foi possível gerar o arquivo."))
+                            }
+                          >
+                            <FileDown className="size-4" />
+                          </Button>
+                          {canDeleteRecords ? (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              aria-label="Excluir avaliação"
+                              className="text-destructive hover:text-destructive"
+                              onClick={() => {
+                                if (
+                                  confirm(
+                                    `Excluir a avaliação de ${a.resident_name || "residente"}?`,
+                                  )
+                                )
+                                  remove.mutate(a.id);
+                              }}
+                            >
+                              <Trash2 className="size-4" />
+                            </Button>
+                          ) : null}
+                        </>
+                      ) : null}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+              {filtered.length === 0 ? (
+                <tr>
+                  <td colSpan={5} className="px-4 py-12 text-center">
+                    <ClipboardList className="mx-auto size-8 text-muted-foreground/50" />
+                    <p className="mt-3 font-medium">Nenhuma avaliação encontrada</p>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      {visible.length
+                        ? "Ajuste a busca ou os filtros para ver outros registros."
+                        : isCoordinator
+                          ? "Ainda não há avaliações enviadas nas especialidades sob sua coordenação."
+                          : "Selecione um residente acima para iniciar o primeiro preenchimento."}
+                    </p>
+                  </td>
+                </tr>
+              ) : null}
+            </tbody>
+          </table>
         )}
       </div>
 
@@ -800,5 +849,9 @@ function Painel() {
 }
 
 function formatDate(value: string) {
-  return new Date(value).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric" });
+  return new Date(value).toLocaleDateString("pt-BR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
 }

@@ -54,7 +54,9 @@ export async function buildNursingCensusWorkbook(census: NursingCensusForDoc) {
   workbook.creator = "AGA ILPI";
   workbook.created = new Date();
 
-  const sheetName = formatCensusDate(census.census_date).replace(/[*?:\\/[\]]/g, ".").slice(0, 31);
+  const sheetName = formatCensusDate(census.census_date)
+    .replace(/[*?:\\/[\]]/g, ".")
+    .slice(0, 31);
   const sheet = workbook.addWorksheet(sheetName, {
     pageSetup: {
       orientation: "landscape",
@@ -120,7 +122,8 @@ export async function buildNursingCensusWorkbook(census: NursingCensusForDoc) {
     cell.value = label;
     cell.font = { name: "Arial Black", size: 9, bold: true };
     cell.alignment = {
-      horizontal: index >= 2 && LEFT_KEYS.has(CENSUS_COLUMNS[index - 2]?.key ?? "") ? "left" : "center",
+      horizontal:
+        index >= 2 && LEFT_KEYS.has(CENSUS_COLUMNS[index - 2]?.key ?? "") ? "left" : "center",
       vertical: "middle",
       wrapText: true,
     };
@@ -130,7 +133,11 @@ export async function buildNursingCensusWorkbook(census: NursingCensusForDoc) {
 
   census.rows.forEach((row, rowIndex) => {
     const sheetRow = sheet.getRow(7 + rowIndex);
-    const values = [String(rowIndex + 1), row["nome"] ?? "", ...CENSUS_COLUMNS.map((c) => String(row[c.key] ?? ""))];
+    const values = [
+      String(rowIndex + 1),
+      row["nome"] ?? "",
+      ...CENSUS_COLUMNS.map((c) => String(row[c.key] ?? "")),
+    ];
     values.forEach((value, index) => {
       const cell = sheetRow.getCell(index + 1);
       cell.value = value;
@@ -142,8 +149,10 @@ export async function buildNursingCensusWorkbook(census: NursingCensusForDoc) {
         vertical: "middle",
         wrapText: true,
       };
-      if (index === 1) cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: NAME_FILL } };
-      if (key === "dependencia") cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: DEP_FILL } };
+      if (index === 1)
+        cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: NAME_FILL } };
+      if (key === "dependencia")
+        cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: DEP_FILL } };
     });
     sheetRow.height = 22.2;
   });

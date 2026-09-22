@@ -18,9 +18,16 @@
   --ring: oklch(0.406 0.062 158.4);
   --font-sans: "Karla", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Fraunces", ui-serif, Georgia, serif;
-  --shadow-soft: 0 1px 2px oklch(0.243 0.021 152.5 / 0.05), 0 8px 24px -12px oklch(0.243 0.021 152.5 / 0.14);
-  --shadow-elevated: 0 2px 4px oklch(0.243 0.021 152.5 / 0.06), 0 24px 48px -20px oklch(0.243 0.021 152.5 / 0.28);
-  --gradient-brand: linear-gradient(145deg, oklch(0.34 0.055 158.4) 0%, var(--primary) 45%, oklch(0.47 0.075 152) 100%);
+  --shadow-soft:
+    0 1px 2px oklch(0.243 0.021 152.5 / 0.05), 0 8px 24px -12px oklch(0.243 0.021 152.5 / 0.14);
+  --shadow-elevated:
+    0 2px 4px oklch(0.243 0.021 152.5 / 0.06), 0 24px 48px -20px oklch(0.243 0.021 152.5 / 0.28);
+  --gradient-brand: linear-gradient(
+    145deg,
+    oklch(0.34 0.055 158.4) 0%,
+    var(--primary) 45%,
+    oklch(0.47 0.075 152) 100%
+  );
 }
 
 * {
@@ -82,8 +89,16 @@ p {
 
 .bg-aurora {
   background:
-    radial-gradient(90% 60% at 10% -10%, color-mix(in oklab, var(--primary) 16%, transparent), transparent 65%),
-    radial-gradient(70% 50% at 100% 100%, color-mix(in oklab, var(--accent) 14%, transparent), transparent 60%);
+    radial-gradient(
+      90% 60% at 10% -10%,
+      color-mix(in oklab, var(--primary) 16%, transparent),
+      transparent 65%
+    ),
+    radial-gradient(
+      70% 50% at 100% 100%,
+      color-mix(in oklab, var(--accent) 14%, transparent),
+      transparent 60%
+    );
 }
 
 .bg-grid {
@@ -585,7 +600,9 @@ p {
   color: var(--foreground);
   font: inherit;
   padding: 0 2.5rem;
-  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  transition:
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .control input::placeholder {
@@ -612,7 +629,9 @@ p {
   background: transparent;
   color: var(--muted-foreground);
   cursor: pointer;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .ghost-btn:hover {
@@ -702,7 +721,9 @@ p {
   opacity: 0;
   transform: translateY(-0.75rem);
   pointer-events: none;
-  transition: opacity 0.25s ease, transform 0.25s ease;
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
 }
 
 .toast.show {
@@ -716,29 +737,57 @@ p {
   animation: rise 0.7s cubic-bezier(0.22, 0.68, 0.24, 1) both;
 }
 
-.delay-100 { animation-delay: 100ms; }
-.delay-150 { animation-delay: 150ms; }
-.delay-200 { animation-delay: 200ms; }
-.delay-300 { animation-delay: 300ms; }
-.delay-600 { animation-delay: 600ms; }
+.delay-100 {
+  animation-delay: 100ms;
+}
+.delay-150 {
+  animation-delay: 150ms;
+}
+.delay-200 {
+  animation-delay: 200ms;
+}
+.delay-300 {
+  animation-delay: 300ms;
+}
+.delay-600 {
+  animation-delay: 600ms;
+}
 
 @keyframes rise {
-  from { opacity: 0; transform: translateY(14px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes drift {
-  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
-  50% { transform: translate3d(-3%, 4%, 0) scale(1.08); }
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(-3%, 4%, 0) scale(1.08);
+  }
 }
 
 @keyframes sheen {
-  0% { transform: translateX(-120%); }
-  60%, 100% { transform: translateX(220%); }
+  0% {
+    transform: translateX(-120%);
+  }
+  60%,
+  100% {
+    transform: translateX(220%);
+  }
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

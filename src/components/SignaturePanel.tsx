@@ -40,7 +40,13 @@ function SignaturePreview({ row }: { row: SpecialtySignatureRow }) {
   );
 }
 
-function SignatureRow({ specialty, row }: { specialty: string; row: SpecialtySignatureRow | undefined }) {
+function SignatureRow({
+  specialty,
+  row,
+}: {
+  specialty: string;
+  row: SpecialtySignatureRow | undefined;
+}) {
   const { data: session } = useAuth();
   const queryClient = useQueryClient();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -52,10 +58,13 @@ function SignatureRow({ specialty, row }: { specialty: string; row: SpecialtySig
   const upload = useMutation({
     mutationFn: async (file: File) => uploadSpecialtySignature(specialty, file, session!.userId),
     onSuccess: () => {
-      toast.success("Assinatura registrada. Ela passará a constar nos documentos desta especialidade.");
+      toast.success(
+        "Assinatura registrada. Ela passará a constar nos documentos desta especialidade.",
+      );
       invalidate();
     },
-    onError: (error) => toast.error(error instanceof Error ? error.message : "Não foi possível enviar a assinatura."),
+    onError: (error) =>
+      toast.error(error instanceof Error ? error.message : "Não foi possível enviar a assinatura."),
   });
 
   const remove = useMutation({
@@ -64,7 +73,10 @@ function SignatureRow({ specialty, row }: { specialty: string; row: SpecialtySig
       toast.success("Assinatura removida.");
       invalidate();
     },
-    onError: (error) => toast.error(error instanceof Error ? error.message : "Não foi possível remover a assinatura."),
+    onError: (error) =>
+      toast.error(
+        error instanceof Error ? error.message : "Não foi possível remover a assinatura.",
+      ),
   });
 
   return (
@@ -84,7 +96,9 @@ function SignatureRow({ specialty, row }: { specialty: string; row: SpecialtySig
               Enviada em {new Date(row.updated_at).toLocaleDateString("pt-BR")} · {row.file_name}
             </p>
           ) : (
-            <p className="mt-1 text-xs text-muted-foreground">Envie uma vez e ela constará em todos os documentos.</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Envie uma vez e ela constará em todos os documentos.
+            </p>
           )}
         </div>
       </div>
@@ -154,8 +168,8 @@ export function SignaturePanel({ compact = false }: { compact?: boolean }) {
         {compact ? "Sua assinatura digitalizada" : "Assinaturas das especialidades"}
       </h2>
       <p className="mt-1 text-sm text-muted-foreground">
-        Envie a assinatura digitalizada (PNG ou JPG, fundo branco). Uma vez enviada, ela aparece automaticamente no
-        Termo de Encerramento de todas as Avaliações e PIAs da especialidade.
+        Envie a assinatura digitalizada (PNG ou JPG, fundo branco). Uma vez enviada, ela aparece
+        automaticamente no Termo de Encerramento de todas as Avaliações e PIAs da especialidade.
       </p>
 
       {isLoading ? (

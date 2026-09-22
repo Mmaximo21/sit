@@ -98,5 +98,9 @@ export function useClosingTerms() {
 /** Termo aplicável a uma especialidade (específico, senão o geral). */
 export function pickClosingTerm(terms: ClosingTermRow[] | undefined, specialty: string) {
   const active = (terms ?? []).filter((t) => t.active);
-  return active.find((t) => t.specialty === specialty) ?? active.find((t) => t.specialty === null) ?? null;
+  return (
+    active.find((t) => t.specialty === specialty) ??
+    active.find((t) => t.specialty === null) ??
+    null
+  );
 }

@@ -189,7 +189,9 @@ export function WorkScheduleBoard({
   );
   const memberList = members.data ?? [];
   const memberIds = new Set(memberList.map((member) => member.id));
-  const rotationList = (rotations.data ?? []).filter((rotation) => memberIds.has(rotation.member_id));
+  const rotationList = (rotations.data ?? []).filter((rotation) =>
+    memberIds.has(rotation.member_id),
+  );
   const vacationList = (vacations.data ?? []).filter((item) => memberIds.has(item.member_id));
   const medicalLeaveList = (medicalLeaves.data ?? []).filter((item) =>
     item.sector ? item.sector === sector : item.member_id ? memberIds.has(item.member_id) : false,
@@ -209,7 +211,8 @@ export function WorkScheduleBoard({
       await queryClient.invalidateQueries({ queryKey: ["work-schedule-sector", sector] });
       toast.success("Escala salva.");
     },
-    onError: (error) => toast.error(error instanceof Error ? error.message : "Não foi possível salvar."),
+    onError: (error) =>
+      toast.error(error instanceof Error ? error.message : "Não foi possível salvar."),
   });
 
   const addMember = useMutation({
@@ -236,7 +239,8 @@ export function WorkScheduleBoard({
       await queryClient.invalidateQueries({ queryKey: ["work-shift-members", sector] });
       toast.success("Colaborador incluído na escala.");
     },
-    onError: (error) => toast.error(error instanceof Error ? error.message : "Não foi possível incluir."),
+    onError: (error) =>
+      toast.error(error instanceof Error ? error.message : "Não foi possível incluir."),
   });
 
   const removeMember = useMutation({
@@ -249,7 +253,8 @@ export function WorkScheduleBoard({
       await queryClient.invalidateQueries({ queryKey: ["work-shift-rotations"] });
       toast.success("Colaborador removido da escala.");
     },
-    onError: (error) => toast.error(error instanceof Error ? error.message : "Não foi possível remover."),
+    onError: (error) =>
+      toast.error(error instanceof Error ? error.message : "Não foi possível remover."),
   });
 
   const addRotation = useMutation({
@@ -257,7 +262,9 @@ export function WorkScheduleBoard({
       const days_ = Number(rotDays);
       if (!rotMember) throw new Error("Escolha o colaborador.");
       if (!Number.isFinite(days_) || days_ < MIN_ROTATION_DAYS) {
-        throw new Error(`A rotatividade só pode ser programada a partir de ${MIN_ROTATION_DAYS} dias.`);
+        throw new Error(
+          `A rotatividade só pode ser programada a partir de ${MIN_ROTATION_DAYS} dias.`,
+        );
       }
       const effective = addDaysISO(todayISO(), Math.round(days_));
       const member = memberList.find((item) => item.id === rotMember);
@@ -265,7 +272,9 @@ export function WorkScheduleBoard({
         member_id: rotMember,
         to_shift: rotShift,
         effective_date: effective,
-        note: member ? `${member.name} passa para o plantão ${rotShift} em ${Math.round(days_)} dias.` : null,
+        note: member
+          ? `${member.name} passa para o plantão ${rotShift} em ${Math.round(days_)} dias.`
+          : null,
         created_by: session?.userId ?? null,
       });
       if (error) throw error;
@@ -274,7 +283,8 @@ export function WorkScheduleBoard({
       await queryClient.invalidateQueries({ queryKey: ["work-shift-rotations"] });
       toast.success("Rotatividade programada.");
     },
-    onError: (error) => toast.error(error instanceof Error ? error.message : "Não foi possível programar."),
+    onError: (error) =>
+      toast.error(error instanceof Error ? error.message : "Não foi possível programar."),
   });
 
   const removeRotation = useMutation({
@@ -286,13 +296,15 @@ export function WorkScheduleBoard({
       await queryClient.invalidateQueries({ queryKey: ["work-shift-rotations"] });
       toast.success("Rotatividade cancelada.");
     },
-    onError: (error) => toast.error(error instanceof Error ? error.message : "Não foi possível cancelar."),
+    onError: (error) =>
+      toast.error(error instanceof Error ? error.message : "Não foi possível cancelar."),
   });
 
   const addVacation = useMutation({
     mutationFn: async () => {
       if (!vacMember) throw new Error("Escolha o colaborador que sai de férias.");
-      if (!vacStart || !vacEnd) throw new Error("Informe a data de entrada e o retorno das férias.");
+      if (!vacStart || !vacEnd)
+        throw new Error("Informe a data de entrada e o retorno das férias.");
       if (vacEnd < vacStart) throw new Error("O retorno deve ser depois da entrada em férias.");
       const cover = vacCover.trim();
       if (!cover) throw new Error("Informe o profissional que vai cobrir as férias.");
@@ -314,7 +326,8 @@ export function WorkScheduleBoard({
       await queryClient.invalidateQueries({ queryKey: ["work-shift-vacations"] });
       toast.success("Férias registradas na escala.");
     },
-    onError: (error) => toast.error(error instanceof Error ? error.message : "Não foi possível registrar."),
+    onError: (error) =>
+      toast.error(error instanceof Error ? error.message : "Não foi possível registrar."),
   });
 
   const removeVacation = useMutation({
@@ -326,7 +339,8 @@ export function WorkScheduleBoard({
       await queryClient.invalidateQueries({ queryKey: ["work-shift-vacations"] });
       toast.success("Férias removidas da escala.");
     },
-    onError: (error) => toast.error(error instanceof Error ? error.message : "Não foi possível remover."),
+    onError: (error) =>
+      toast.error(error instanceof Error ? error.message : "Não foi possível remover."),
   });
 
   const addMedicalLeave = useMutation({
@@ -334,7 +348,8 @@ export function WorkScheduleBoard({
       const name = leaveMember.trim();
       if (!name) throw new Error("Digite o nome do colaborador afastado.");
       if (!leaveStart) throw new Error("Informe o início do afastamento.");
-      if (leaveEnd && leaveEnd < leaveStart) throw new Error("O retorno deve ser depois do início do afastamento.");
+      if (leaveEnd && leaveEnd < leaveStart)
+        throw new Error("O retorno deve ser depois do início do afastamento.");
       const matched = memberList.find((item) => normalizeName(item.name) === normalizeName(name));
       const { error } = await supabase.from("work_shift_medical_leaves").insert({
         member_id: matched?.id ?? null,
@@ -355,7 +370,8 @@ export function WorkScheduleBoard({
       await queryClient.invalidateQueries({ queryKey: ["work-shift-medical-leaves"] });
       toast.success("Afastamento médico registrado.");
     },
-    onError: (error) => toast.error(error instanceof Error ? error.message : "Não foi possível registrar."),
+    onError: (error) =>
+      toast.error(error instanceof Error ? error.message : "Não foi possível registrar."),
   });
 
   const removeMedicalLeave = useMutation({
@@ -367,7 +383,8 @@ export function WorkScheduleBoard({
       await queryClient.invalidateQueries({ queryKey: ["work-shift-medical-leaves"] });
       toast.success("Afastamento médico removido.");
     },
-    onError: (error) => toast.error(error instanceof Error ? error.message : "Não foi possível remover."),
+    onError: (error) =>
+      toast.error(error instanceof Error ? error.message : "Não foi possível remover."),
   });
 
   async function download() {
@@ -445,7 +462,11 @@ export function WorkScheduleBoard({
             />
           </div>
           <Button onClick={() => saveSettings.mutate()} disabled={saveSettings.isPending}>
-            {saveSettings.isPending ? <Loader2 className="mr-1 size-4 animate-spin" /> : <Save className="mr-1 size-4" />}
+            {saveSettings.isPending ? (
+              <Loader2 className="mr-1 size-4 animate-spin" />
+            ) : (
+              <Save className="mr-1 size-4" />
+            )}
             Salvar
           </Button>
         </div>
@@ -457,7 +478,8 @@ export function WorkScheduleBoard({
           <h2 className="font-display text-lg font-semibold">Afastamento médico</h2>
         </div>
         <p className="mt-1 text-sm text-muted-foreground">
-          Registre o período para retirar automaticamente os dias do colaborador da escala e identificá-lo no PDF.
+          Registre o período para retirar automaticamente os dias do colaborador da escala e
+          identificá-lo no PDF.
         </p>
         <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-[1fr_150px_150px_1fr_auto] xl:items-end">
           <div>
@@ -471,33 +493,64 @@ export function WorkScheduleBoard({
           </div>
           <div>
             <Label htmlFor={`leave-start-${sector}`}>Início</Label>
-            <Input id={`leave-start-${sector}`} type="date" value={leaveStart} onChange={(event) => setLeaveStart(event.target.value)} />
+            <Input
+              id={`leave-start-${sector}`}
+              type="date"
+              value={leaveStart}
+              onChange={(event) => setLeaveStart(event.target.value)}
+            />
           </div>
           <div>
             <Label htmlFor={`leave-end-${sector}`}>Retorno (opcional)</Label>
-            <Input id={`leave-end-${sector}`} type="date" value={leaveEnd} onChange={(event) => setLeaveEnd(event.target.value)} />
+            <Input
+              id={`leave-end-${sector}`}
+              type="date"
+              value={leaveEnd}
+              onChange={(event) => setLeaveEnd(event.target.value)}
+            />
           </div>
           <div>
             <Label htmlFor={`leave-note-${sector}`}>Observação</Label>
-            <Input id={`leave-note-${sector}`} value={leaveNote} onChange={(event) => setLeaveNote(event.target.value)} placeholder="Ex.: atestado médico" />
+            <Input
+              id={`leave-note-${sector}`}
+              value={leaveNote}
+              onChange={(event) => setLeaveNote(event.target.value)}
+              placeholder="Ex.: atestado médico"
+            />
           </div>
           <Button onClick={() => addMedicalLeave.mutate()} disabled={addMedicalLeave.isPending}>
             <Plus className="mr-1 size-4" /> Registrar
           </Button>
         </div>
         <ul className="mt-5 space-y-2 text-sm">
-          {medicalLeaveList.length === 0 ? <li className="text-muted-foreground">Nenhum afastamento médico registrado.</li> : null}
+          {medicalLeaveList.length === 0 ? (
+            <li className="text-muted-foreground">Nenhum afastamento médico registrado.</li>
+          ) : null}
           {medicalLeaveList.map((leave) => {
             return (
-              <li key={leave.id} className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-border/70 bg-background/60 px-4 py-3">
+              <li
+                key={leave.id}
+                className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-border/70 bg-background/60 px-4 py-3"
+              >
                 <span>
                   <strong>{medicalLeaveName(leave, memberList)}</strong>{" "}
-                  {leave.end_date
-                    ? <>afastado de {formatDateBR(leave.start_date)} a {formatDateBR(leave.end_date)}</>
-                    : <>afastado desde {formatDateBR(leave.start_date)} — retorno em aberto</>}
-                  {leave.note ? <span className="block text-xs text-muted-foreground">{leave.note}</span> : null}
+                  {leave.end_date ? (
+                    <>
+                      afastado de {formatDateBR(leave.start_date)} a {formatDateBR(leave.end_date)}
+                    </>
+                  ) : (
+                    <>afastado desde {formatDateBR(leave.start_date)} — retorno em aberto</>
+                  )}
+                  {leave.note ? (
+                    <span className="block text-xs text-muted-foreground">{leave.note}</span>
+                  ) : null}
                 </span>
-                <Button variant="ghost" size="sm" className="text-destructive" onClick={() => removeMedicalLeave.mutate(leave.id)}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-destructive"
+                  onClick={() => removeMedicalLeave.mutate(leave.id)}
+                >
                   <Trash2 className="mr-1 size-4" /> Remover
                 </Button>
               </li>
@@ -586,23 +639,32 @@ export function WorkScheduleBoard({
 
         <div className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
           {SHIFT_OPTIONS.map((shift) => {
-            const team = memberList.filter((member) => memberShiftOn(member, rotationList, todayISO()) === shift);
+            const team = memberList.filter(
+              (member) => memberShiftOn(member, rotationList, todayISO()) === shift,
+            );
             return (
               <div key={shift} className="rounded-xl border border-border/70 bg-background/60 p-4">
                 <div className="flex items-center justify-between">
-                  <span className="font-display font-semibold">{isDiarista(shift) ? "Diaristas" : shift}</span>
+                  <span className="font-display font-semibold">
+                    {isDiarista(shift) ? "Diaristas" : shift}
+                  </span>
                   <Badge variant="secondary">{team.length}</Badge>
                 </div>
                 <ul className="mt-3 space-y-2 text-sm">
-                  {team.length === 0 ? <li className="text-muted-foreground">Sem colaboradores.</li> : null}
+                  {team.length === 0 ? (
+                    <li className="text-muted-foreground">Sem colaboradores.</li>
+                  ) : null}
                   {team.map((member) => (
                     <li key={member.id} className="flex items-start justify-between gap-2">
                       <span>
                         {member.name}
                         {member.job_title ? (
-                          <span className="block text-xs text-muted-foreground">{member.job_title}</span>
+                          <span className="block text-xs text-muted-foreground">
+                            {member.job_title}
+                          </span>
                         ) : null}
-                        {extended && (member.council || member.registry_number || member.work_hours) ? (
+                        {extended &&
+                        (member.council || member.registry_number || member.work_hours) ? (
                           <span className="block text-xs text-muted-foreground">
                             {[
                               member.council ? `Conselho ${member.council}` : null,
@@ -726,8 +788,8 @@ export function WorkScheduleBoard({
           <h2 className="font-display text-lg font-semibold">Férias</h2>
         </div>
         <p className="mt-1 text-sm text-muted-foreground">
-          Informe quando o colaborador entra e retorna das férias e quem vai cobrir o período. Os dias de
-          férias saem da escala do colaborador e passam para o profissional da cobertura.
+          Informe quando o colaborador entra e retorna das férias e quem vai cobrir o período. Os
+          dias de férias saem da escala do colaborador e passam para o profissional da cobertura.
         </p>
         <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-[1fr_150px_150px_1fr_1fr_auto] xl:items-end">
           <div>
@@ -822,18 +884,32 @@ export function WorkScheduleBoard({
       <section className="rounded-2xl border border-border bg-card p-5 shadow-soft">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="icon" onClick={() => shiftMonth(-1)} aria-label="Mês anterior">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => shiftMonth(-1)}
+              aria-label="Mês anterior"
+            >
               <ChevronLeft className="size-4" />
             </Button>
             <h2 className="font-display text-lg font-semibold">
               {MONTH_LABELS[month]} de {year}
             </h2>
-            <Button variant="outline" size="icon" onClick={() => shiftMonth(1)} aria-label="Próximo mês">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => shiftMonth(1)}
+              aria-label="Próximo mês"
+            >
               <ChevronRight className="size-4" />
             </Button>
           </div>
           <Button onClick={download} disabled={downloading || memberList.length === 0}>
-            {downloading ? <Loader2 className="mr-1 size-4 animate-spin" /> : <FileDown className="mr-1 size-4" />}
+            {downloading ? (
+              <Loader2 className="mr-1 size-4 animate-spin" />
+            ) : (
+              <FileDown className="mr-1 size-4" />
+            )}
             Baixar escala (PDF)
           </Button>
         </div>
@@ -860,7 +936,9 @@ export function WorkScheduleBoard({
                     <th
                       key={date.getDate()}
                       className={`w-8 px-1 py-1 text-center font-semibold ${
-                        headHoliday ? "bg-amber-200/70 text-amber-950 dark:bg-amber-400/25 dark:text-amber-100" : ""
+                        headHoliday
+                          ? "bg-amber-200/70 text-amber-950 dark:bg-amber-400/25 dark:text-amber-100"
+                          : ""
                       }`}
                       title={headHoliday ? `Feriado: ${headHoliday}` : undefined}
                     >
@@ -891,21 +969,28 @@ export function WorkScheduleBoard({
               {memberList.flatMap((member) => {
                 const firstDayShift = memberShiftOn(member, rotationList, toISODate(days[0]!));
                 const memberVacations = vacationList.filter(
-                  (item) => item.member_id === member.id && vacationOverlapsMonth(item, year, month),
+                  (item) =>
+                    item.member_id === member.id && vacationOverlapsMonth(item, year, month),
                 );
                 return [
                   <tr key={member.id} className="border-t border-border/60">
                     <td className="sticky left-0 z-10 bg-card px-3 py-2 text-left font-medium">
                       {member.name}
                     </td>
-                    <td className="px-2 py-2 text-center text-muted-foreground">{member.job_title ?? "—"}</td>
+                    <td className="px-2 py-2 text-center text-muted-foreground">
+                      {member.job_title ?? "—"}
+                    </td>
                     {extended ? (
                       <>
-                        <td className="px-2 py-2 text-center text-muted-foreground">{member.council ?? "—"}</td>
+                        <td className="px-2 py-2 text-center text-muted-foreground">
+                          {member.council ?? "—"}
+                        </td>
                         <td className="px-2 py-2 text-center text-muted-foreground">
                           {member.registry_number ?? "—"}
                         </td>
-                        <td className="px-2 py-2 text-center text-muted-foreground">{member.work_hours ?? "—"}</td>
+                        <td className="px-2 py-2 text-center text-muted-foreground">
+                          {member.work_hours ?? "—"}
+                        </td>
                       </>
                     ) : null}
                     <td className="px-2 py-2 text-center font-semibold">
@@ -926,26 +1011,34 @@ export function WorkScheduleBoard({
                             medicalLeave
                               ? "bg-destructive/15 font-semibold text-destructive"
                               : vacation
-                              ? "bg-muted font-semibold text-muted-foreground"
-                              : works
-                                ? "bg-gradient-brand font-semibold text-primary-foreground"
-                                : "text-muted-foreground"
+                                ? "bg-muted font-semibold text-muted-foreground"
+                                : works
+                                  ? "bg-gradient-brand font-semibold text-primary-foreground"
+                                  : "text-muted-foreground"
                           }`}
                           title={
                             medicalLeave
                               ? `${member.name} em afastamento médico${medicalLeave.note ? ` — ${medicalLeave.note}` : ""}`
                               : vacation
-                              ? `${member.name} em férias — cobertura: ${vacation.cover_name}${
-                                  vacation.cover_job_title ? ` (${vacation.cover_job_title})` : ""
-                                }`
-                              : works
-                                ? `${member.name} — ${diarista ? "diarista" : `plantão ${shift}`} em ${formatDateBR(dayISO)}`
-                                : diarista && holiday
-                                  ? `${holiday} — diarista não trabalha`
-                                  : undefined
+                                ? `${member.name} em férias — cobertura: ${vacation.cover_name}${
+                                    vacation.cover_job_title ? ` (${vacation.cover_job_title})` : ""
+                                  }`
+                                : works
+                                  ? `${member.name} — ${diarista ? "diarista" : `plantão ${shift}`} em ${formatDateBR(dayISO)}`
+                                  : diarista && holiday
+                                    ? `${holiday} — diarista não trabalha`
+                                    : undefined
                           }
                         >
-                          {medicalLeave ? "AFT" : vacation ? "FÉR" : works ? (diarista ? "T" : "24h") : "—"}
+                          {medicalLeave
+                            ? "AFT"
+                            : vacation
+                              ? "FÉR"
+                              : works
+                                ? diarista
+                                  ? "T"
+                                  : "24h"
+                                : "—"}
                         </td>
                       );
                     })}
@@ -974,13 +1067,16 @@ export function WorkScheduleBoard({
                       {days.map((date) => {
                         const dayISO = toISODate(date);
                         const shift = memberShiftOn(member, rotationList, dayISO);
-                        const inRange = vacation.start_date <= dayISO && dayISO <= vacation.end_date;
+                        const inRange =
+                          vacation.start_date <= dayISO && dayISO <= vacation.end_date;
                         const works = inRange && isWorkDay(shift, anchor, dayISO);
                         return (
                           <td
                             key={dayISO}
                             className={`border-l border-border/40 px-1 py-2 text-center ${
-                              works ? "bg-accent font-semibold text-accent-foreground" : "text-muted-foreground"
+                              works
+                                ? "bg-accent font-semibold text-accent-foreground"
+                                : "text-muted-foreground"
                             }`}
                           >
                             {works ? (isDiarista(shift) ? "T" : "24h") : "—"}
@@ -1003,11 +1099,12 @@ export function WorkScheduleBoard({
             <span className="size-3 rounded bg-muted ring-1 ring-border" /> Férias (FÉR)
           </span>
           <span className="inline-flex items-center gap-1.5">
-            <span className="size-3 rounded bg-destructive/40 ring-1 ring-destructive/60" /> Afastamento médico (AFT)
+            <span className="size-3 rounded bg-destructive/40 ring-1 ring-destructive/60" />{" "}
+            Afastamento médico (AFT)
           </span>
           <span className="inline-flex items-center gap-1.5">
-            <span className="size-3 rounded bg-amber-200 ring-1 ring-amber-500 dark:bg-amber-400/40" /> Feriado (Angra
-            dos Reis / RJ / nacional)
+            <span className="size-3 rounded bg-amber-200 ring-1 ring-amber-500 dark:bg-amber-400/40" />{" "}
+            Feriado (Angra dos Reis / RJ / nacional)
           </span>
         </div>
         {monthHolidays.length > 0 ? (
@@ -1017,9 +1114,10 @@ export function WorkScheduleBoard({
           </p>
         ) : null}
         <p className="mt-2 text-xs text-muted-foreground">
-          Plantões SD1 a SD4 marcam 24h seguidas de 72 horas de descanso; diaristas (marcados com T) trabalham de
-          segunda a sexta, sem fins de semana nem feriados. "FÉR" indica férias, e a linha logo abaixo mostra o
-          profissional que cobre o período. "AFT" indica afastamento médico.
+          Plantões SD1 a SD4 marcam 24h seguidas de 72 horas de descanso; diaristas (marcados com T)
+          trabalham de segunda a sexta, sem fins de semana nem feriados. "FÉR" indica férias, e a
+          linha logo abaixo mostra o profissional que cobre o período. "AFT" indica afastamento
+          médico.
         </p>
       </section>
     </div>

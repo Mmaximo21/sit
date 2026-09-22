@@ -17,5 +17,11 @@ export default defineMcp({
     issuer: `https://${projectRef}.supabase.co/auth/v1`,
     acceptedAudiences: "authenticated",
   }),
-  tools: [listarResidentes, avaliacoesDoResidente, censoDeEnfermagem, relatoriosDePlantao, calcularNews],
+  tools: [
+    listarResidentes,
+    avaliacoesDoResidente,
+    censoDeEnfermagem,
+    relatoriosDePlantao,
+    calcularNews,
+  ],
 });

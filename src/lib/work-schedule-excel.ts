@@ -153,7 +153,11 @@ export async function buildWorkScheduleWorkbook(data: WorkScheduleExport) {
 
     const holiday = holidayName(toISODate(date));
     if (holiday) {
-      const fill = { type: "pattern" as const, pattern: "solid" as const, fgColor: { argb: HOLIDAY_FILL } };
+      const fill = {
+        type: "pattern" as const,
+        pattern: "solid" as const,
+        fgColor: { argb: HOLIDAY_FILL },
+      };
       dayCell.fill = fill;
       weekCell.fill = fill;
       dayCell.note = `Feriado: ${holiday}`;
@@ -176,7 +180,12 @@ export async function buildWorkScheduleWorkbook(data: WorkScheduleExport) {
     nameCell.border = border;
 
     const infoValues = extended
-      ? [member.job_title ?? "", member.council ?? "", member.registry_number ?? "", member.work_hours ?? ""]
+      ? [
+          member.job_title ?? "",
+          member.council ?? "",
+          member.registry_number ?? "",
+          member.work_hours ?? "",
+        ]
       : [member.job_title ?? ""];
     infoValues.forEach((value, index) => {
       const cell = row.getCell(2 + index);

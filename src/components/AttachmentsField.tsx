@@ -176,7 +176,8 @@ export function AttachmentsField({
             Arraste o protocolo do teste aqui ou selecione o arquivo
           </p>
           <p className="mt-1 text-xs text-muted-foreground">
-            Ao enviar, o conteúdo é lido e digitalizado automaticamente e passa a integrar esta avaliação.
+            Ao enviar, o conteúdo é lido e digitalizado automaticamente e passa a integrar esta
+            avaliação.
           </p>
           <Button
             type="button"
@@ -218,7 +219,13 @@ export function AttachmentsField({
                   </div>
                 </div>
                 <div className="flex items-center gap-1">
-                  <Button type="button" variant="ghost" size="icon" onClick={() => void open(item)} aria-label="Abrir arquivo">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => void open(item)}
+                    aria-label="Abrir arquivo"
+                  >
                     <Download className="size-4" />
                   </Button>
                   {!readOnly ? (
@@ -266,7 +273,9 @@ export function AttachmentsField({
                   disabled={readOnly}
                   placeholder="Transcrição do protocolo."
                   onChange={(e) =>
-                    onChange(items.map((a) => (a.path === item.path ? { ...a, text: e.target.value } : a)))
+                    onChange(
+                      items.map((a) => (a.path === item.path ? { ...a, text: e.target.value } : a)),
+                    )
                   }
                 />
               </div>

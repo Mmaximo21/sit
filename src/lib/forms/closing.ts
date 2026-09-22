@@ -21,17 +21,23 @@ export const COUNCIL_OPTIONS = [
 export const COUNCIL_BY_SPECIALTY: Record<string, string> = {
   Geriatria: COUNCIL_OPTIONS[0]!,
   Enfermagem: COUNCIL_OPTIONS[1]!,
-  "Nutrição": COUNCIL_OPTIONS[2]!,
+  Nutrição: COUNCIL_OPTIONS[2]!,
   "Serviço Social": COUNCIL_OPTIONS[3]!,
   Psicologia: COUNCIL_OPTIONS[4]!,
   Fisioterapia: COUNCIL_OPTIONS[5]!,
   "Terapia Ocupacional": COUNCIL_OPTIONS[5]!,
-  "Fonoaudióloga": COUNCIL_OPTIONS[6]!,
+  Fonoaudióloga: COUNCIL_OPTIONS[6]!,
   Fonoaudiologia: COUNCIL_OPTIONS[6]!,
 };
 
 /** Campos obrigatórios do Termo de Encerramento e Assinaturas. */
-export const CLOSING_FIELD_KEYS = ["local", "data_encerramento", "profissional", "conselho", "registro"] as const;
+export const CLOSING_FIELD_KEYS = [
+  "local",
+  "data_encerramento",
+  "profissional",
+  "conselho",
+  "registro",
+] as const;
 
 export function closingFields(): Field[] {
   return [
@@ -67,9 +73,12 @@ export function closingSection(title = "Termo de Encerramento e Assinaturas"): S
 /** Aplica as configurações administráveis (conselhos e texto do termo) ao formulário. */
 export function applyClosingSettings<T extends { sections: Section[] }>(
   spec: T,
-  settings: { councilOptions?: string[] | undefined; title?: string | undefined; description?: string | undefined },
+  settings: {
+    councilOptions?: string[] | undefined;
+    title?: string | undefined;
+    description?: string | undefined;
+  },
 ): T {
-
   const sections = spec.sections.map((section) => {
     const hasClosing = section.fields.some((f) => f.key === "conselho");
     if (!hasClosing) return section;
@@ -86,7 +95,6 @@ export function applyClosingSettings<T extends { sections: Section[] }>(
   });
   return { ...spec, sections };
 }
-
 
 /** Retorna os campos obrigatórios ainda não preenchidos (usado antes de enviar/fechar). */
 export function missingRequiredFields(

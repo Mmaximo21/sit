@@ -20,7 +20,6 @@ export type TabKey =
   | "avisos"
   | "admin";
 
-
 export type TabDef = {
   key: TabKey;
   label: string;

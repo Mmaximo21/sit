@@ -29,7 +29,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Activity, FileDown, Loader2, Save, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
-
 export const Route = createFileRoute("/_authenticated/news")({
   head: () => ({
     meta: [
@@ -42,7 +41,8 @@ export const Route = createFileRoute("/_authenticated/news")({
       { property: "og:title", content: "Escala NEWS — Sistema Interno ILPI" },
       {
         property: "og:description",
-        content: "National Early Warning Score de todos os residentes da I.L.P.I. Luiza Olindina Silva Alves.",
+        content:
+          "National Early Warning Score de todos os residentes da I.L.P.I. Luiza Olindina Silva Alves.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -51,7 +51,11 @@ export const Route = createFileRoute("/_authenticated/news")({
   component: NewsPage,
 });
 
-const NUMERIC_FIELDS: { key: "fr" | "spo2" | "temp" | "pas" | "fc"; label: string; width: number }[] = [
+const NUMERIC_FIELDS: {
+  key: "fr" | "spo2" | "temp" | "pas" | "fc";
+  label: string;
+  width: number;
+}[] = [
   { key: "fr", label: "FR", width: 92 },
   { key: "spo2", label: "SpO₂", width: 92 },
   { key: "temp", label: "T °C", width: 92 },
@@ -69,7 +73,6 @@ function NewsPage() {
   const [rows, setRows] = useState<NewsBatchRow[]>([]);
   const [history, setHistory] = useState<NewsBatchRecord[]>([]);
   const [syncing, setSyncing] = useState(false);
-
 
   useEffect(() => {
     setHistory(loadNewsHistory());
@@ -107,7 +110,8 @@ function NewsPage() {
   if (!allowed) {
     return (
       <div className="card-surface p-8 text-sm text-muted-foreground">
-        A Escala NEWS é exclusiva das especialidades Enfermagem, Técnico de Enfermagem e Geriatria e da Direção.
+        A Escala NEWS é exclusiva das especialidades Enfermagem, Técnico de Enfermagem e Geriatria e
+        da Direção.
       </div>
     );
   }
@@ -201,7 +205,6 @@ function NewsPage() {
     }
   }
 
-
   return (
     <div
       className="relative left-1/2 -translate-x-1/2 space-y-8"
@@ -213,10 +216,10 @@ function NewsPage() {
         </span>
         <h1 className="font-display text-3xl font-semibold tracking-tight">Escala NEWS</h1>
         <p className="max-w-3xl text-sm text-muted-foreground">
-          Lista única com todos os residentes ativos: preencha os sinais vitais linha por linha e o escore NEWS 2 é
-          calculado em tempo real. Ao salvar, os sinais vitais e o escore são lançados automaticamente no Censo de
-          Enfermagem do mesmo dia. O download sai em A4 paisagem, com o papel timbrado padrão das avaliações.
-
+          Lista única com todos os residentes ativos: preencha os sinais vitais linha por linha e o
+          escore NEWS 2 é calculado em tempo real. Ao salvar, os sinais vitais e o escore são
+          lançados automaticamente no Censo de Enfermagem do mesmo dia. O download sai em A4
+          paisagem, com o papel timbrado padrão das avaliações.
         </p>
       </header>
 
@@ -262,7 +265,9 @@ function NewsPage() {
             </colgroup>
             <thead className="bg-muted/60">
               <tr>
-                <th className="px-1 py-2 text-left font-semibold uppercase tracking-wide text-muted-foreground">Nº</th>
+                <th className="px-1 py-2 text-left font-semibold uppercase tracking-wide text-muted-foreground">
+                  Nº
+                </th>
                 <th className="px-2 py-2 text-left font-semibold uppercase tracking-wide text-muted-foreground">
                   Residente
                 </th>
@@ -288,7 +293,9 @@ function NewsPage() {
             <tbody>
               {rows.map((row, index) => {
                 const result = results[index]!;
-                const scores = Object.fromEntries(result.params.map((p) => [p.key, p.score])) as Record<string, number>;
+                const scores = Object.fromEntries(
+                  result.params.map((p) => [p.key, p.score]),
+                ) as Record<string, number>;
                 return (
                   <tr key={row.resident_id} className="border-t border-border align-top">
                     <td className="px-1 py-2 text-muted-foreground">{index + 1}</td>
@@ -373,7 +380,9 @@ function NewsPage() {
                       </span>
                     </td>
                     <td className="px-1 py-1.5">
-                      <span className={`block rounded-md border px-1.5 py-1 text-[10px] leading-snug ${levelCardClass(result.level)}`}>
+                      <span
+                        className={`block rounded-md border px-1.5 py-1 text-[10px] leading-snug ${levelCardClass(result.level)}`}
+                      >
                         <strong>{result.classification}</strong> · {result.conduct}
                       </span>
                     </td>
@@ -386,7 +395,11 @@ function NewsPage() {
 
         <div className="flex flex-wrap gap-2">
           <Button onClick={handleSave} disabled={syncing}>
-            {syncing ? <Loader2 className="mr-2 size-4 animate-spin" /> : <Save className="mr-2 size-4" />}
+            {syncing ? (
+              <Loader2 className="mr-2 size-4 animate-spin" />
+            ) : (
+              <Save className="mr-2 size-4" />
+            )}
             Salvar e lançar no censo
           </Button>
           <Button
@@ -400,7 +413,6 @@ function NewsPage() {
             }
           >
             <FileDown className="mr-2 size-4" /> Baixar A4 (paisagem)
-
           </Button>
         </div>
       </section>
@@ -425,14 +437,18 @@ function NewsPage() {
               const filledRows = item.rows.filter(isRowFilled);
               const critical = filledRows.filter((row) => computeNews(row).total >= 5).length;
               return (
-                <li key={item.id} className="card-surface flex flex-wrap items-center justify-between gap-3 p-4">
+                <li
+                  key={item.id}
+                  className="card-surface flex flex-wrap items-center justify-between gap-3 p-4"
+                >
                   <div>
                     <p className="font-display text-base font-semibold">
                       Escala NEWS de {item.evaluationDate.split("-").reverse().join("/")}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      {item.nurseName || "Sem responsável informado"} · {filledRows.length} residentes preenchidos ·{" "}
-                      {critical} com escore ≥ 5 · salvo em {formatDateTime(item.createdAt)}
+                      {item.nurseName || "Sem responsável informado"} · {filledRows.length}{" "}
+                      residentes preenchidos · {critical} com escore ≥ 5 · salvo em{" "}
+                      {formatDateTime(item.createdAt)}
                     </p>
                   </div>
                   <div className="flex gap-2">

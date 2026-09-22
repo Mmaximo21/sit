@@ -16,7 +16,12 @@ export type SpecialtySignatureRow = {
 /** Formatos aceitos: precisam ser suportados pelo documento .docx. */
 export const SIGNATURE_ACCEPT = "image/png,image/jpeg";
 
-export type SignatureImage = { data: Uint8Array; type: "png" | "jpg"; width: number; height: number };
+export type SignatureImage = {
+  data: Uint8Array;
+  type: "png" | "jpg";
+  width: number;
+  height: number;
+};
 
 function slugSpecialty(specialty: string) {
   return specialty
@@ -45,7 +50,9 @@ export function useSpecialtySignatures() {
 
 /** Link temporário para visualizar a assinatura enviada. */
 export async function signaturePreviewUrl(path: string) {
-  const { data, error } = await supabase.storage.from(SIGNATURE_BUCKET).createSignedUrl(path, 60 * 30);
+  const { data, error } = await supabase.storage
+    .from(SIGNATURE_BUCKET)
+    .createSignedUrl(path, 60 * 30);
   if (error || !data) throw new Error(error?.message ?? "Não foi possível abrir a assinatura.");
   return data.signedUrl;
 }
@@ -122,7 +129,9 @@ export async function loadSignatureImage(specialty: string): Promise<SignatureIm
     .maybeSingle();
   if (!row?.file_path) return null;
 
-  const { data: blob, error } = await supabase.storage.from(SIGNATURE_BUCKET).download(row.file_path);
+  const { data: blob, error } = await supabase.storage
+    .from(SIGNATURE_BUCKET)
+    .download(row.file_path);
   if (error || !blob) return null;
 
   const { width, height } = await imageSize(blob);

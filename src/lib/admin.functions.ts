@@ -57,16 +57,26 @@ async function assertCanManageUser(supabase: TypedClient, userId: string, target
   if (await isMaster(supabase, userId)) return;
   if (await isCoordenacao(supabase, userId)) return;
 
-  const { data: scopes } = await supabase.from("coordinator_scopes").select("specialty").eq("user_id", userId);
+  const { data: scopes } = await supabase
+    .from("coordinator_scopes")
+    .select("specialty")
+    .eq("user_id", userId);
   if (!scopes || scopes.length === 0) throw new Error("Você não tem permissão para esta ação.");
 
-  const { data: target } = await supabase.from("profiles").select("specialty").eq("id", targetUserId).maybeSingle();
+  const { data: target } = await supabase
+    .from("profiles")
+    .select("specialty")
+    .eq("id", targetUserId)
+    .maybeSingle();
   const targetSpecialty = target?.specialty ?? null;
   const coversAll = scopes.some((s) => s.specialty === null);
-  if (coversAll ? !targetSpecialty : !targetSpecialty || !scopes.some((s) => s.specialty === targetSpecialty))
+  if (
+    coversAll
+      ? !targetSpecialty
+      : !targetSpecialty || !scopes.some((s) => s.specialty === targetSpecialty)
+  )
     throw new Error("Este usuário não pertence às especialidades sob sua coordenação.");
 }
-
 
 /** One-time setup: creates the master account when none exists yet. */
 export const masterExists = createServerFn({ method: "GET" }).handler(async () => {
@@ -102,7 +112,8 @@ export const createMasterAccount = createServerFn({ method: "POST" })
       email_confirm: true,
       user_metadata: { username: data.username, full_name: data.fullName },
     });
-    if (error || !created.user) throw new Error(error?.message ?? "Não foi possível criar o master.");
+    if (error || !created.user)
+      throw new Error(error?.message ?? "Não foi possível criar o master.");
 
     await supabaseAdmin.from("profiles").insert({
       id: created.user.id,
@@ -143,7 +154,8 @@ export const createProfessional = createServerFn({ method: "POST" })
       email_confirm: true,
       user_metadata: { username: data.username, full_name: data.fullName },
     });
-    if (error || !created.user) throw new Error(error?.message ?? "Não foi possível criar o usuário.");
+    if (error || !created.user)
+      throw new Error(error?.message ?? "Não foi possível criar o usuário.");
 
     const { error: profileError } = await supabaseAdmin.from("profiles").insert({
       id: created.user.id,
@@ -169,17 +181,22 @@ export const resetUserPassword = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     await assertCanManageUser(context.supabase, context.userId, data.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { error } = await supabaseAdmin.auth.admin.updateUserById(data.userId, { password: data.password });
+    const { error } = await supabaseAdmin.auth.admin.updateUserById(data.userId, {
+      password: data.password,
+    });
     if (error) throw new Error(error.message);
     return { ok: true as const };
   });
 
 export const deleteProfessional = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: { userId: string }) => z.object({ userId: z.string().uuid() }).parse(input))
+  .inputValidator((input: { userId: string }) =>
+    z.object({ userId: z.string().uuid() }).parse(input),
+  )
   .handler(async ({ data, context }) => {
     await assertMaster(context.supabase, context.userId);
-    if (data.userId === context.userId) throw new Error("Você não pode excluir a própria conta master.");
+    if (data.userId === context.userId)
+      throw new Error("Você não pode excluir a própria conta master.");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin.auth.admin.deleteUser(data.userId);
     if (error) throw new Error(error.message);
@@ -191,11 +208,16 @@ export const deleteProfessional = createServerFn({ method: "POST" })
 /** Contas protegidas: não podem ganhar nem perder o título de Administrador. */
 const PROTECTED_NAMES = ["matheus", "vanessa"];
 
-const isProtectedProfile = (fullName: string | null | undefined, username: string | null | undefined) => {
+const isProtectedProfile = (
+  fullName: string | null | undefined,
+  username: string | null | undefined,
+) => {
   const name = (fullName ?? "").trim().toLowerCase();
   const login = (username ?? "").trim().toLowerCase();
-  return PROTECTED_NAMES.some((p) => name === p || name.startsWith(`${p} `) || login === p) ||
-    ["root", "direcao"].includes(login);
+  return (
+    PROTECTED_NAMES.some((p) => name === p || name.startsWith(`${p} `) || login === p) ||
+    ["root", "direcao"].includes(login)
+  );
 };
 
 /** Cria uma nova conta com título de Administrador (master). */
@@ -203,7 +225,11 @@ export const createMasterUser = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: { username: string; password: string; fullName: string }) =>
     z
-      .object({ username: usernameSchema, password: passwordSchema, fullName: z.string().trim().min(2).max(120) })
+      .object({
+        username: usernameSchema,
+        password: passwordSchema,
+        fullName: z.string().trim().min(2).max(120),
+      })
       .parse(input),
   )
   .handler(async ({ data, context }) => {
@@ -216,7 +242,8 @@ export const createMasterUser = createServerFn({ method: "POST" })
       email_confirm: true,
       user_metadata: { username: data.username, full_name: data.fullName },
     });
-    if (error || !created.user) throw new Error(error?.message ?? "Não foi possível criar a conta.");
+    if (error || !created.user)
+      throw new Error(error?.message ?? "Não foi possível criar a conta.");
 
     const { error: profileError } = await supabaseAdmin.from("profiles").insert({
       id: created.user.id,
@@ -269,7 +296,9 @@ export const setMasterRole = createServerFn({ method: "POST" })
         .select("id", { count: "exact", head: true })
         .eq("user_id", data.userId);
       if ((count ?? 0) === 0)
-        await supabaseAdmin.from("user_roles").insert({ user_id: data.userId, role: "profissional" });
+        await supabaseAdmin
+          .from("user_roles")
+          .insert({ user_id: data.userId, role: "profissional" });
     }
     return { ok: true as const };
   });

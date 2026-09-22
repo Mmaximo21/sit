@@ -2,14 +2,13 @@ import { closingSection } from "./closing";
 import type { Field, FormSpec } from "./types";
 import { residentInfoFields } from "./resident-info";
 
-const apgar = (key: string, label: string): Field =>
-  ({
-    type: "select",
-    key,
-    label,
-    options: ["2", "1", "0"],
-    hint: "2 = Sempre · 1 = Algumas vezes · 0 = Nunca",
-  });
+const apgar = (key: string, label: string): Field => ({
+  type: "select",
+  key,
+  label,
+  options: ["2", "1", "0"],
+  hint: "2 = Sempre · 1 = Algumas vezes · 0 = Nunca",
+});
 
 export const servicoSocialForm: FormSpec = {
   specialty: "Serviço Social",
@@ -69,7 +68,12 @@ export const servicoSocialForm: FormSpec = {
           label: "Classificação predominante",
           options: ["Sempre (2)", "Algumas vezes (1)", "Nunca (0)"],
         },
-        { type: "textarea", key: "interpretacao", label: "Interpretação / parecer social", rows: 8 },
+        {
+          type: "textarea",
+          key: "interpretacao",
+          label: "Interpretação / parecer social",
+          rows: 8,
+        },
       ],
     },
     {
@@ -79,9 +83,21 @@ export const servicoSocialForm: FormSpec = {
           type: "select",
           key: "religiao",
           label: "Religião",
-          options: ["Católica", "Evangélica", "Espírita", "Umbanda/Candomblé", "Outra", "Não possui"],
+          options: [
+            "Católica",
+            "Evangélica",
+            "Espírita",
+            "Umbanda/Candomblé",
+            "Outra",
+            "Não possui",
+          ],
         },
-        { type: "select", key: "praticante", label: "Praticante", options: ["Sim", "Não", "Ocasionalmente"] },
+        {
+          type: "select",
+          key: "praticante",
+          label: "Praticante",
+          options: ["Sim", "Não", "Ocasionalmente"],
+        },
         {
           type: "select",
           key: "onde_pratica",
@@ -101,7 +117,11 @@ export const servicoSocialForm: FormSpec = {
       title: "5. Preferências Pessoais",
       fields: [
         { type: "checkbox", key: "pref_reflexao", label: "Prefere atividades de reflexão" },
-        { type: "checkbox", key: "pref_rodas_filosoficas", label: "Gosta de rodas de conversa filosóficas" },
+        {
+          type: "checkbox",
+          key: "pref_rodas_filosoficas",
+          label: "Gosta de rodas de conversa filosóficas",
+        },
         { type: "textarea", key: "pref_outras", label: "Outras preferências", rows: 3 },
       ],
     },
@@ -121,12 +141,21 @@ export const servicoSocialForm: FormSpec = {
               key: "participantes",
               label: "Participantes",
               type: "select",
-              options: ["Residente", "Residente e familiares", "Grupo de residentes", "Não participou"],
+              options: [
+                "Residente",
+                "Residente e familiares",
+                "Grupo de residentes",
+                "Não participou",
+              ],
             },
             { key: "conf", label: "Conf.", type: "checkbox" },
           ],
           rows: [
-            { atividade: "Rodas de conversa", detalhamento: "Memórias da infância", periodo: "01/01 a 30/06" },
+            {
+              atividade: "Rodas de conversa",
+              detalhamento: "Memórias da infância",
+              periodo: "01/01 a 30/06",
+            },
             { atividade: "Café coletivo", detalhamento: "Bolo caseiro", periodo: "01/01 a 30/06" },
             { atividade: "Festas", detalhamento: "Aniversariantes", periodo: "01/01 a 30/06" },
             { atividade: "Jogos de mesa", detalhamento: "Bingo/Dominó", periodo: "01/01 a 30/06" },

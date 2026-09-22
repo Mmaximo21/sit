@@ -131,8 +131,8 @@ export function CalorieCalculatorField({ label, hint, readOnly, value, onChange 
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-semibold text-foreground">{entry.name}</p>
                       <p className="text-xs tabular-nums text-muted-foreground">
-                        {Math.round(entry.grams)} g · {Math.round(entryValue(entry, "kcal"))} kcal · P{" "}
-                        {entryValue(entry, "protein").toFixed(1)} g · C{" "}
+                        {Math.round(entry.grams)} g · {Math.round(entryValue(entry, "kcal"))} kcal ·
+                        P {entryValue(entry, "protein").toFixed(1)} g · C{" "}
                         {entryValue(entry, "carbs").toFixed(1)} g · G{" "}
                         {entryValue(entry, "fat").toFixed(1)} g
                       </p>

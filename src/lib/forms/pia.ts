@@ -2,17 +2,22 @@ import { closingSection } from "./closing";
 import { residentInfoFields } from "./resident-info";
 import type { Field, FormSpec, Section } from "./types";
 
-
 /** Numeração e nomenclatura institucionais do PIA por especialidade. */
 const SECTION_INFO: Record<string, { title: string; subtitle: string }> = {
   Geriatria: { title: "18.2 — Condições de Saúde", subtitle: "Avaliação Médica" },
   Enfermagem: { title: "18.1 — Avaliação de Enfermagem", subtitle: "Avaliação de Enfermagem" },
-  "Técnico de Enfermagem": { title: "18.1 — Avaliação de Enfermagem", subtitle: "Avaliação de Enfermagem" },
-  "Nutrição": { title: "22 — Avaliação Nutricional", subtitle: "Avaliação Nutricional" },
+  "Técnico de Enfermagem": {
+    title: "18.1 — Avaliação de Enfermagem",
+    subtitle: "Avaliação de Enfermagem",
+  },
+  Nutrição: { title: "22 — Avaliação Nutricional", subtitle: "Avaliação Nutricional" },
   Fisioterapia: { title: "21 — Avaliação Fisioterapia", subtitle: "Avaliação Fisioterapêutica" },
-  "Terapia Ocupacional": { title: "23 — Avaliação Terapeuta Ocupacional", subtitle: "Avaliação de Terapia Ocupacional" },
+  "Terapia Ocupacional": {
+    title: "23 — Avaliação Terapeuta Ocupacional",
+    subtitle: "Avaliação de Terapia Ocupacional",
+  },
   Fonoaudiologia: { title: "18.7 — Condições de Saúde", subtitle: "Avaliação Fonoaudiológica" },
-  "Fonoaudióloga": { title: "18.7 — Condições de Saúde", subtitle: "Avaliação Fonoaudiológica" },
+  Fonoaudióloga: { title: "18.7 — Condições de Saúde", subtitle: "Avaliação Fonoaudiológica" },
   Psicologia: { title: "20 — Avaliação Psicologia", subtitle: "Avaliação Psicológica" },
   "Serviço Social": { title: "19 — Condições de Saúde", subtitle: "Avaliação Social" },
 };
@@ -35,9 +40,29 @@ const DEFAULT_FIELDS: Field[] = [
     placeholder: "Um diagnóstico por linha",
     required: true,
   },
-  { type: "textarea", key: "evolucao", label: "Evolução clínica do período", rows: 14, required: true },
-  { type: "textarea", key: "metas", label: "Metas", rows: 7, placeholder: "Uma meta por linha", required: true },
-  { type: "textarea", key: "prazos", label: "Prazos", rows: 7, placeholder: "Um prazo por linha", required: true },
+  {
+    type: "textarea",
+    key: "evolucao",
+    label: "Evolução clínica do período",
+    rows: 14,
+    required: true,
+  },
+  {
+    type: "textarea",
+    key: "metas",
+    label: "Metas",
+    rows: 7,
+    placeholder: "Uma meta por linha",
+    required: true,
+  },
+  {
+    type: "textarea",
+    key: "prazos",
+    label: "Prazos",
+    rows: 7,
+    placeholder: "Um prazo por linha",
+    required: true,
+  },
 ];
 
 /** Modelo institucional da Avaliação de Enfermagem (18.1), na ordem da página. */
@@ -70,7 +95,13 @@ const ENFERMAGEM_FIELDS: Field[] = [
     rows: 3,
     placeholder: "Ex.: Psiquiatria, Clínica Geral, Geriatria, Fisioterapia",
   },
-  { type: "textarea", key: "medicacoes", label: "Medicações", rows: 10, placeholder: "Uma medicação por linha" },
+  {
+    type: "textarea",
+    key: "medicacoes",
+    label: "Medicações",
+    rows: 10,
+    placeholder: "Uma medicação por linha",
+  },
   { type: "textarea", key: "atopias", label: "Histórico de atopias", rows: 4 },
   { type: "textarea", key: "parametros_vitais", label: "Parâmetros vitais", rows: 3 },
   { type: "textarea", key: "eliminacoes", label: "Eliminações urinárias e intestinais", rows: 3 },
@@ -92,8 +123,22 @@ const ENFERMAGEM_FIELDS: Field[] = [
   },
   { type: "textarea", key: "intervencao", label: "Intervenção de enfermagem", rows: 14 },
   { type: "textarea", key: "prescricao", label: "Prescrição de enfermagem", rows: 16 },
-  { type: "textarea", key: "metas", label: "Metas", rows: 8, placeholder: "Uma meta por linha", required: true },
-  { type: "textarea", key: "prazos", label: "Prazos", rows: 6, placeholder: "Um prazo por linha", required: true },
+  {
+    type: "textarea",
+    key: "metas",
+    label: "Metas",
+    rows: 8,
+    placeholder: "Uma meta por linha",
+    required: true,
+  },
+  {
+    type: "textarea",
+    key: "prazos",
+    label: "Prazos",
+    rows: 6,
+    placeholder: "Um prazo por linha",
+    required: true,
+  },
 ];
 
 /** Meses do ano para os selects do trimestre (Fisioterapia). */
@@ -162,9 +207,27 @@ const FISIOTERAPIA_FIELDS: Field[] = [
 
 /** Modelo institucional da Avaliação Nutricional (22), na ordem da página. */
 const NUTRICAO_FIELDS: Field[] = [
-  { type: "select", key: "mes_1_nome", label: "1º mês do trimestre", options: MESES, required: true },
-  { type: "select", key: "mes_2_nome", label: "2º mês do trimestre", options: MESES, required: true },
-  { type: "select", key: "mes_3_nome", label: "3º mês do trimestre", options: MESES, required: true },
+  {
+    type: "select",
+    key: "mes_1_nome",
+    label: "1º mês do trimestre",
+    options: MESES,
+    required: true,
+  },
+  {
+    type: "select",
+    key: "mes_2_nome",
+    label: "2º mês do trimestre",
+    options: MESES,
+    required: true,
+  },
+  {
+    type: "select",
+    key: "mes_3_nome",
+    label: "3º mês do trimestre",
+    options: MESES,
+    required: true,
+  },
   {
     type: "text",
     key: "ano_trimestre",
@@ -208,12 +271,19 @@ const TERAPIA_OCUPACIONAL_FIELDS: Field[] = [
     key: "quadro_clinico",
     label: "Apresentação e quadro clínico",
     rows: 8,
-    placeholder: "Residente, idade, quadro clínico, dependência nas AVDs e elegibilidade para Terapia Ocupacional",
+    placeholder:
+      "Residente, idade, quadro clínico, dependência nas AVDs e elegibilidade para Terapia Ocupacional",
     required: true,
   },
   { type: "textarea", key: "indicacao", label: "Indicação", rows: 5, required: true },
   { type: "textarea", key: "objetivo_geral", label: "Objetivo geral", rows: 5, required: true },
-  { type: "textarea", key: "objetivos_especificos", label: "Objetivos específicos", rows: 8, required: true },
+  {
+    type: "textarea",
+    key: "objetivos_especificos",
+    label: "Objetivos específicos",
+    rows: 8,
+    required: true,
+  },
   { type: "textarea", key: "meta", label: "Meta", rows: 5, required: true },
   { type: "textarea", key: "conclusao", label: "Conclusão", rows: 8, required: true },
 ];
@@ -343,18 +413,35 @@ const SERVICO_SOCIAL_SECTIONS: Section[] = [
     fields: [
       { type: "checkbox", key: "viol_psicologica", label: "Violência Psicológica" },
       { type: "checkbox", key: "viol_patrimonial", label: "Violência Patrimonial" },
-      { type: "checkbox", key: "viol_institucional", label: "Violência e/ou Negligência Institucional" },
+      {
+        type: "checkbox",
+        key: "viol_institucional",
+        label: "Violência e/ou Negligência Institucional",
+      },
       { type: "checkbox", key: "viol_situacao_rua", label: "Situação de Rua" },
       { type: "checkbox", key: "viol_outros", label: "Outros" },
-      { type: "text", key: "viol_outros_desc", label: "Outros — especifique", placeholder: "Ex.: Situação de risco" },
+      {
+        type: "text",
+        key: "viol_outros_desc",
+        label: "Outros — especifique",
+        placeholder: "Ex.: Situação de risco",
+      },
     ],
   },
   {
     title: "9 — Condições Desfavoráveis dos Filhos/Responsáveis para Cuidar do Idoso",
     fields: [
       { type: "checkbox", key: "cond_saude_fisica", label: "Problemas de saúde física" },
-      { type: "checkbox", key: "cond_psicologicos", label: "Problemas psicológicos (stress, ansiedade, etc.)" },
-      { type: "checkbox", key: "cond_conflitos", label: "Conflitos familiares / relacionamentos violentos" },
+      {
+        type: "checkbox",
+        key: "cond_psicologicos",
+        label: "Problemas psicológicos (stress, ansiedade, etc.)",
+      },
+      {
+        type: "checkbox",
+        key: "cond_conflitos",
+        label: "Conflitos familiares / relacionamentos violentos",
+      },
       { type: "checkbox", key: "cond_falta_apoio", label: "Falta de apoio parental ou relacional" },
       { type: "checkbox", key: "cond_alcoolismo", label: "Alcoolismo" },
       { type: "checkbox", key: "cond_dependencia", label: "Dependência química" },
@@ -468,8 +555,18 @@ const SERVICO_SOCIAL_SECTIONS: Section[] = [
   {
     title: "16 — Plano de Atendimento",
     fields: [
-      { type: "textarea", key: "encaminhamentos_realizados", label: "Encaminhamentos realizados", rows: 6 },
-      { type: "textarea", key: "atendimentos_realizados", label: "Atendimentos realizados", rows: 6 },
+      {
+        type: "textarea",
+        key: "encaminhamentos_realizados",
+        label: "Encaminhamentos realizados",
+        rows: 6,
+      },
+      {
+        type: "textarea",
+        key: "atendimentos_realizados",
+        label: "Atendimentos realizados",
+        rows: 6,
+      },
     ],
   },
   {
@@ -487,7 +584,12 @@ const SERVICO_SOCIAL_SECTIONS: Section[] = [
   {
     title: "18 — Possibilidade de Reintegração Familiar",
     fields: [
-      { type: "radio", key: "reintegracao", label: "Possibilidade de reintegração familiar", options: ["Sim", "Não"] },
+      {
+        type: "radio",
+        key: "reintegracao",
+        label: "Possibilidade de reintegração familiar",
+        options: ["Sim", "Não"],
+      },
       { type: "textarea", key: "proposta", label: "Proposta", rows: 8, required: true },
     ],
   },
@@ -495,16 +597,41 @@ const SERVICO_SOCIAL_SECTIONS: Section[] = [
     title: "19 — Avaliação do Serviço Social",
     subtitle: "Avaliação do Serviço Social",
     fields: [
-      { type: "select", key: "mes_1_nome", label: "1º mês do trimestre", options: MESES, required: true },
-      { type: "select", key: "mes_2_nome", label: "2º mês do trimestre", options: MESES, required: true },
-      { type: "select", key: "mes_3_nome", label: "3º mês do trimestre", options: MESES, required: true },
-      { type: "text", key: "ano_trimestre", label: "Ano do trimestre", placeholder: "Ex.: 2026", required: true },
+      {
+        type: "select",
+        key: "mes_1_nome",
+        label: "1º mês do trimestre",
+        options: MESES,
+        required: true,
+      },
+      {
+        type: "select",
+        key: "mes_2_nome",
+        label: "2º mês do trimestre",
+        options: MESES,
+        required: true,
+      },
+      {
+        type: "select",
+        key: "mes_3_nome",
+        label: "3º mês do trimestre",
+        options: MESES,
+        required: true,
+      },
+      {
+        type: "text",
+        key: "ano_trimestre",
+        label: "Ano do trimestre",
+        placeholder: "Ex.: 2026",
+        required: true,
+      },
       {
         type: "textarea",
         key: "avaliacao_social",
         label: "Avaliação social do trimestre",
         rows: 14,
-        placeholder: "Histórico, quadro funcional, rede de apoio, visitas e acompanhamentos do período",
+        placeholder:
+          "Histórico, quadro funcional, rede de apoio, visitas e acompanhamentos do período",
         required: true,
       },
       { type: "textarea", key: "meta", label: "Meta", rows: 6, required: true },
@@ -529,7 +656,6 @@ function piaSectionFields(specialty: string): Field[] {
   if (specialty === "Terapia Ocupacional") return TERAPIA_OCUPACIONAL_FIELDS;
   return DEFAULT_FIELDS;
 }
-
 
 /** Plano Individual de Atendimento (PIA) — estrutura única para todas as especialidades. */
 export function getPiaSpec(specialty: string): FormSpec {

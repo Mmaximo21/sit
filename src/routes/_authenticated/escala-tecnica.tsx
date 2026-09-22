@@ -14,7 +14,8 @@ export const Route = createFileRoute("/_authenticated/escala-tecnica")({
       { property: "og:title", content: "Escala Técnica — Sistema Interno ILPI" },
       {
         property: "og:description",
-        content: "Planilha da escala técnica com os dias de plantão destacados e download em Excel.",
+        content:
+          "Planilha da escala técnica com os dias de plantão destacados e download em Excel.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

@@ -100,23 +100,61 @@ export type NewsResult = {
 
 export function computeNews(v: NewsVitals): NewsResult {
   const params: NewsParam[] = [
-    { key: "fr", label: "Frequência Respiratória", unit: "irpm", value: v.fr, score: scoreFR(num(v.fr)) },
-    { key: "spo2", label: "Saturação de O₂", unit: "%", value: v.spo2, score: scoreSpo2(num(v.spo2)) },
+    {
+      key: "fr",
+      label: "Frequência Respiratória",
+      unit: "irpm",
+      value: v.fr,
+      score: scoreFR(num(v.fr)),
+    },
+    {
+      key: "spo2",
+      label: "Saturação de O₂",
+      unit: "%",
+      value: v.spo2,
+      score: scoreSpo2(num(v.spo2)),
+    },
     { key: "temp", label: "Temperatura", unit: "°C", value: v.temp, score: scoreTemp(num(v.temp)) },
-    { key: "pas", label: "Pressão Arterial (PAS/PAD)", unit: "mmHg", value: v.pas, score: scorePas(numPas(v.pas)) },
-    { key: "fc", label: "Frequência Cardíaca", unit: "bpm", value: v.fc, score: scoreFC(num(v.fc)) },
-    { key: "mental", label: "Estado Mental", unit: "", value: v.mental, score: scoreMental(v.mental) },
+    {
+      key: "pas",
+      label: "Pressão Arterial (PAS/PAD)",
+      unit: "mmHg",
+      value: v.pas,
+      score: scorePas(numPas(v.pas)),
+    },
+    {
+      key: "fc",
+      label: "Frequência Cardíaca",
+      unit: "bpm",
+      value: v.fc,
+      score: scoreFC(num(v.fc)),
+    },
+    {
+      key: "mental",
+      label: "Estado Mental",
+      unit: "",
+      value: v.mental,
+      score: scoreMental(v.mental),
+    },
   ];
   const total = params.reduce((sum, p) => sum + p.score, 0);
   const { classification, conduct, level } = classifyNews(total);
   return { params, total, classification, conduct, level };
 }
 
-export function classifyNews(total: number): { classification: string; conduct: string; level: 0 | 1 | 2 | 3 } {
+export function classifyNews(total: number): {
+  classification: string;
+  conduct: string;
+  level: 0 | 1 | 2 | 3;
+} {
   if (total === 0)
     return { classification: "Sem risco", conduct: "Avaliação mínima a cada 4-6h", level: 0 };
   if (total <= 4)
-    return { classification: "Baixo risco", conduct: "Avaliação a cada 4-6h por enfermeiro", level: 1 };
+    return {
+      classification: "Baixo risco",
+      conduct: "Avaliação a cada 4-6h por enfermeiro",
+      level: 1,
+    };
   if (total <= 6)
     return {
       classification: "Risco moderado",
@@ -168,7 +206,9 @@ export function mergeNewsRows(
 ): NewsBatchRow[] {
   return residents.map((resident) => {
     const existing = saved.find((row) => row.resident_id === resident.id);
-    return existing ? { ...emptyBatchRow(resident), ...existing, nome: resident.full_name } : emptyBatchRow(resident);
+    return existing
+      ? { ...emptyBatchRow(resident), ...existing, nome: resident.full_name }
+      : emptyBatchRow(resident);
   });
 }
 
@@ -188,13 +228,14 @@ export function newsRowToCensusFields(row: NewsBatchRow): Record<string, string>
   return fields;
 }
 
-
 export function loadNewsHistory(): NewsBatchRecord[] {
   if (typeof window === "undefined") return [];
   try {
     const raw = window.localStorage.getItem(NEWS_STORAGE_KEY);
     const parsed = raw ? JSON.parse(raw) : [];
-    return Array.isArray(parsed) ? (parsed as NewsBatchRecord[]).filter((r) => Array.isArray(r?.rows)) : [];
+    return Array.isArray(parsed)
+      ? (parsed as NewsBatchRecord[]).filter((r) => Array.isArray(r?.rows))
+      : [];
   } catch {
     return [];
   }

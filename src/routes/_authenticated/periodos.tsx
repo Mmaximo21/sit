@@ -28,7 +28,10 @@ export const Route = createFileRoute("/_authenticated/periodos")({
   head: () => ({
     meta: [
       { title: "Prazos e ciclos — AGA ILPI" },
-      { name: "description", content: "Defina datas de preenchimento, prazos por especialidade e feche ciclos." },
+      {
+        name: "description",
+        content: "Defina datas de preenchimento, prazos por especialidade e feche ciclos.",
+      },
       { property: "og:title", content: "Prazos e ciclos — AGA ILPI" },
       { property: "og:description", content: "Controle master dos prazos de preenchimento." },
     ],
@@ -42,7 +45,11 @@ function PeriodosPage() {
   const queryClient = useQueryClient();
   const [title, setTitle] = useState("");
   const [dueDate, setDueDate] = useState("");
-  const [deleteTarget, setDeleteTarget] = useState<{ id: string; title: string; dueDate: string | null } | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<{
+    id: string;
+    title: string;
+    dueDate: string | null;
+  } | null>(null);
   const [deleteReason, setDeleteReason] = useState("");
 
   const { data: periods } = useQuery({
@@ -63,7 +70,10 @@ function PeriodosPage() {
   };
 
   const exportPeriod = async (periodId: string, periodTitle: string) => {
-    const { data, error } = await supabase.from("assessments").select("*").eq("period_id", periodId);
+    const { data, error } = await supabase
+      .from("assessments")
+      .select("*")
+      .eq("period_id", periodId);
     if (error) {
       toast.error(error.message);
       return;
@@ -108,15 +118,20 @@ function PeriodosPage() {
       toast.success("Ciclo criado.");
       invalidate();
     },
-    onError: (error) => toast.error(error instanceof Error ? error.message : "Erro ao criar ciclo."),
+    onError: (error) =>
+      toast.error(error instanceof Error ? error.message : "Erro ao criar ciclo."),
   });
 
   const deletePeriod = useMutation({
     mutationFn: async () => {
       if (!deleteTarget) throw new Error("Nenhum ciclo selecionado.");
       const reason = deleteReason.trim();
-      if (reason.length < 5) throw new Error("Descreva o motivo da exclusão (mínimo 5 caracteres).");
-      const { error } = await supabase.from("assessment_periods").delete().eq("id", deleteTarget.id);
+      if (reason.length < 5)
+        throw new Error("Descreva o motivo da exclusão (mínimo 5 caracteres).");
+      const { error } = await supabase
+        .from("assessment_periods")
+        .delete()
+        .eq("id", deleteTarget.id);
       if (error) throw error;
       await logDeletion({
         userId: session?.userId ?? "",
@@ -134,7 +149,8 @@ function PeriodosPage() {
       invalidate();
       queryClient.invalidateQueries({ queryKey: ["deletion-logs"] });
     },
-    onError: (error) => toast.error(error instanceof Error ? error.message : "Erro ao excluir ciclo."),
+    onError: (error) =>
+      toast.error(error instanceof Error ? error.message : "Erro ao excluir ciclo."),
   });
 
   if (session && !session.isMaster) {
@@ -146,7 +162,8 @@ function PeriodosPage() {
       <div>
         <h1 className="font-display text-3xl font-semibold">Prazos e ciclos</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Defina a data limite geral, ajuste prazos por especialidade e feche o ciclo quando concluído.
+          Defina a data limite geral, ajuste prazos por especialidade e feche o ciclo quando
+          concluído.
         </p>
       </div>
 
@@ -164,7 +181,12 @@ function PeriodosPage() {
           </div>
           <div className="space-y-2">
             <Label htmlFor="due">Prazo geral</Label>
-            <Input id="due" type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} />
+            <Input
+              id="due"
+              type="date"
+              value={dueDate}
+              onChange={(e) => setDueDate(e.target.value)}
+            />
           </div>
           <Button onClick={() => createPeriod.mutate()} disabled={createPeriod.isPending}>
             <CalendarPlus className="mr-2 size-4" /> Criar ciclo
@@ -214,7 +236,11 @@ function PeriodosPage() {
                 </Button>
                 {period.status === "fechado" ? (
                   <>
-                    <Button variant="secondary" size="sm" onClick={() => exportPeriod(period.id, period.title)}>
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      onClick={() => exportPeriod(period.id, period.title)}
+                    >
                       <FileDown className="mr-1 size-4" /> Baixar .docx
                     </Button>
                     {session?.isMaster ? (
@@ -223,7 +249,11 @@ function PeriodosPage() {
                         size="sm"
                         onClick={() => {
                           setDeleteReason("");
-                          setDeleteTarget({ id: period.id, title: period.title, dueDate: period.due_date });
+                          setDeleteTarget({
+                            id: period.id,
+                            title: period.title,
+                            dueDate: period.due_date,
+                          });
                         }}
                       >
                         <Trash2 className="mr-1 size-4" /> Excluir
@@ -237,7 +267,8 @@ function PeriodosPage() {
             <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
               {specialtyNames.map((specialty) => {
                 const current =
-                  (period.period_deadlines ?? []).find((d) => d.specialty === specialty)?.due_date ?? "";
+                  (period.period_deadlines ?? []).find((d) => d.specialty === specialty)
+                    ?.due_date ?? "";
                 return (
                   <div key={specialty} className="space-y-1.5">
                     <Label className="text-xs text-muted-foreground">{specialty}</Label>
@@ -272,9 +303,9 @@ function PeriodosPage() {
           <DialogHeader>
             <DialogTitle>Excluir ciclo fechado</DialogTitle>
             <DialogDescription>
-              {deleteTarget ? `“${deleteTarget.title}” será removido permanentemente.` : null} As avaliações
-              vinculadas permanecem, mas deixam de pertencer a este ciclo. Informe o motivo — ele fica no
-              histórico de exclusões.
+              {deleteTarget ? `“${deleteTarget.title}” será removido permanentemente.` : null} As
+              avaliações vinculadas permanecem, mas deixam de pertencer a este ciclo. Informe o
+              motivo — ele fica no histórico de exclusões.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-2">
@@ -306,5 +337,9 @@ function PeriodosPage() {
 }
 
 function formatDate(value: string) {
-  return new Date(value).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric" });
+  return new Date(value).toLocaleDateString("pt-BR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
 }

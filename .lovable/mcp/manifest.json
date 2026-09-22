@@ -5,9 +5,7 @@
   "auth": {
     "type": "oauth",
     "issuer": "https://ymqmeldafedqzyiidcfw.supabase.co/auth/v1",
-    "accepted_audiences": [
-      "authenticated"
-    ]
+    "accepted_audiences": ["authenticated"]
   },
   "mcp": {
     "server": {
@@ -71,9 +69,7 @@
               "maximum": 9007199254740991
             }
           },
-          "required": [
-            "resident_id"
-          ]
+          "required": ["resident_id"]
         },
         "outputSchema": null
       },
@@ -163,13 +159,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "fr",
-            "spo2",
-            "temp",
-            "pas",
-            "fc"
-          ]
+          "required": ["fr", "spo2", "temp", "pas", "fc"]
         },
         "outputSchema": null
       }

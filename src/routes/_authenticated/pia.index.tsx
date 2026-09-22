@@ -27,10 +27,14 @@ export const Route = createFileRoute("/_authenticated/pia/")({
       { title: "PIA — Plano Individual de Atendimento | ILPI" },
       {
         name: "description",
-        content: "Elabore e acompanhe o Plano Individual de Atendimento de cada residente por especialidade.",
+        content:
+          "Elabore e acompanhe o Plano Individual de Atendimento de cada residente por especialidade.",
       },
       { property: "og:title", content: "PIA — Plano Individual de Atendimento" },
-      { property: "og:description", content: "Metas, prazos e evolução do período por especialidade." },
+      {
+        property: "og:description",
+        content: "Metas, prazos e evolução do período por especialidade.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -53,7 +57,10 @@ function PiaList() {
   const isCoordinator = (session?.isCoordinator ?? false) && !isMaster;
   const targetSpecialty = session?.isMaster ? specialty : (session?.specialty ?? "");
   const canCreate =
-    !isCoordinator && !isCoordenacao && session?.specialty !== "Supervisor Administrativo" && !!session;
+    !isCoordinator &&
+    !isCoordenacao &&
+    session?.specialty !== "Supervisor Administrativo" &&
+    !!session;
 
   const { data: residents } = useQuery({
     queryKey: ["residents"],
@@ -87,7 +94,8 @@ function PiaList() {
       if (!session) throw new Error("Sessão expirada.");
       if (!targetSpecialty) throw new Error("Selecione a especialidade.");
       if (!selectedResident) throw new Error("Selecione o residente pelo nome completo.");
-      if (!periodLabel.trim()) throw new Error("Informe o período do plano (ex.: Abril a junho, 2026).");
+      if (!periodLabel.trim())
+        throw new Error("Informe o período do plano (ex.: Abril a junho, 2026).");
 
       const { data, error } = await supabase
         .from("care_plans")
@@ -121,7 +129,8 @@ function PiaList() {
       queryClient.invalidateQueries({ queryKey: ["care-plans"] });
       navigate({ to: "/pia/$id", params: { id } });
     },
-    onError: (error) => toast.error(error instanceof Error ? error.message : "Não foi possível criar o PIA."),
+    onError: (error) =>
+      toast.error(error instanceof Error ? error.message : "Não foi possível criar o PIA."),
   });
 
   const filtered = (plans ?? []).filter((plan) => {
@@ -137,15 +146,20 @@ function PiaList() {
   return (
     <div className="space-y-6">
       <div className="animate-rise relative overflow-hidden rounded-2xl border border-white/20 bg-gradient-hero p-5 text-white shadow-elevated sm:p-7">
-        <div className="bg-grid-soft pointer-events-none absolute inset-0 opacity-25" aria-hidden="true" />
+        <div
+          className="bg-grid-soft pointer-events-none absolute inset-0 opacity-25"
+          aria-hidden="true"
+        />
         <div className="relative">
-          <p className="text-xs font-medium uppercase tracking-[0.18em] text-white/75">Documento institucional</p>
+          <p className="text-xs font-medium uppercase tracking-[0.18em] text-white/75">
+            Documento institucional
+          </p>
           <h1 className="font-display mt-1.5 text-2xl font-semibold sm:text-3xl">
             PIA — Plano Individual de Atendimento
           </h1>
           <p className="mt-2 max-w-2xl text-sm text-primary-foreground/85">
-            Estruturado por especialidade com diagnósticos, evolução do período, metas e prazos, seguindo o
-            modelo institucional da ILPI.
+            Estruturado por especialidade com diagnósticos, evolução do período, metas e prazos,
+            seguindo o modelo institucional da ILPI.
           </p>
         </div>
       </div>

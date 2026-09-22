@@ -51,7 +51,11 @@ export const ACTIVITY_FACTORS = [
  */
 export const CONDITION_FACTORS = [
   { id: "nenhuma", label: "Sem estresse metabólico relevante", factor: 1.0 },
-  { id: "alzheimer", label: "Doença de Alzheimer / demência avançada (agitação, perambulação)", factor: 1.15 },
+  {
+    id: "alzheimer",
+    label: "Doença de Alzheimer / demência avançada (agitação, perambulação)",
+    factor: 1.15,
+  },
   { id: "parkinson", label: "Parkinson com rigidez/discinesia", factor: 1.15 },
   { id: "dpoc_estavel", label: "DPOC estável", factor: 1.15 },
   { id: "dpoc_exacerbado", label: "DPOC em exacerbação / esforço respiratório", factor: 1.3 },

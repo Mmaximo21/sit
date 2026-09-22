@@ -43,8 +43,8 @@ async function generateWithGemini(prompt: string, apiKey: string) {
   }
 
   const json = (await response.json()) as GeminiResponse;
-  const b64 = json.candidates?.[0]?.content?.parts?.find((part) => part.inlineData?.data)?.inlineData
-    ?.data;
+  const b64 = json.candidates?.[0]?.content?.parts?.find((part) => part.inlineData?.data)
+    ?.inlineData?.data;
   if (!b64) throw new Error("O gerador de imagens não devolveu nenhuma imagem.");
   return bytesFromBase64(b64);
 }

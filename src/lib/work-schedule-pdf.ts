@@ -182,13 +182,27 @@ export async function buildWorkSchedulePdf(data: WorkSchedulePdfExport) {
 
     // Logotipo da Prefeitura à esquerda, dentro da zona livre.
     const left = fit(prefeitura, Math.min(92, sideZone), logoBox);
-    doc.addImage(prefeitura.data, "PNG", margin, margin + (logoBox - left.height) / 2, left.width, left.height);
+    doc.addImage(
+      prefeitura.data,
+      "PNG",
+      margin,
+      margin + (logoBox - left.height) / 2,
+      left.width,
+      left.height,
+    );
 
     // IGEDES encostada na margem direita e ILPI ao lado, com folga entre elas.
     const igedesSize = fit(igedes, Math.min(32, sideZone - 15 - gapEntreLogos), logoBox);
     const ilpiSize = fit(ilpi, Math.min(15, sideZone - igedesSize.width - gapEntreLogos), logoBox);
     const rightX = pageW - margin - igedesSize.width;
-    doc.addImage(igedes.data, "PNG", rightX, margin + (logoBox - igedesSize.height) / 2, igedesSize.width, igedesSize.height);
+    doc.addImage(
+      igedes.data,
+      "PNG",
+      rightX,
+      margin + (logoBox - igedesSize.height) / 2,
+      igedesSize.width,
+      igedesSize.height,
+    );
     doc.addImage(
       ilpi.data,
       "PNG",
@@ -241,7 +255,13 @@ export async function buildWorkSchedulePdf(data: WorkSchedulePdfExport) {
     return top + headerH;
   }
 
-  function drawCell(x: number, y: number, width: number, label: string, fill?: [number, number, number]) {
+  function drawCell(
+    x: number,
+    y: number,
+    width: number,
+    label: string,
+    fill?: [number, number, number],
+  ) {
     if (fill) {
       doc.setFillColor(...fill);
       doc.rect(x, y, width, rowH, "F");
@@ -314,14 +334,14 @@ export async function buildWorkSchedulePdf(data: WorkSchedulePdfExport) {
         const fill = onMedicalLeave
           ? MEDICAL_LEAVE
           : onVacation
-          ? VACATION
-          : works
-            ? diarista
-              ? DIARISTA_COLOR
-              : WORK
-            : isWeekend(dayISO)
-              ? WEEKEND
-              : undefined;
+            ? VACATION
+            : works
+              ? diarista
+                ? DIARISTA_COLOR
+                : WORK
+              : isWeekend(dayISO)
+                ? WEEKEND
+                : undefined;
         drawCell(
           daysX + dayW * index,
           y,
@@ -341,12 +361,23 @@ export async function buildWorkSchedulePdf(data: WorkSchedulePdfExport) {
     const coverLabel = `Cobertura: ${vacation.cover_name}${
       vacation.cover_job_title ? ` — ${vacation.cover_job_title}` : ""
     } (${formatDateBR(vacation.start_date)} a ${formatDateBR(vacation.end_date)})`;
-    drawCell(leadX[0]!, y, leadWidths[0]!, truncate(doc, coverLabel, leadWidths[0]! - 2), [242, 242, 242]);
+    drawCell(
+      leadX[0]!,
+      y,
+      leadWidths[0]!,
+      truncate(doc, coverLabel, leadWidths[0]! - 2),
+      [242, 242, 242],
+    );
     const rest = extended
       ? [vacation.cover_job_title ?? "", "", "", "", isDiarista(monthShift) ? "DIAR." : monthShift]
       : [vacation.cover_job_title ?? "", isDiarista(monthShift) ? "DIAR." : monthShift];
     rest.forEach((value, index) => {
-      drawCell(leadX[index + 1]!, y, leadWidths[index + 1]!, truncate(doc, value, leadWidths[index + 1]! - 2));
+      drawCell(
+        leadX[index + 1]!,
+        y,
+        leadWidths[index + 1]!,
+        truncate(doc, value, leadWidths[index + 1]! - 2),
+      );
     });
     doc.setFontSize(5.6);
     days.forEach((date, index) => {
@@ -365,11 +396,21 @@ export async function buildWorkSchedulePdf(data: WorkSchedulePdfExport) {
     y += rowH;
   }
 
-  const monthVacations = vacations.filter((item) => vacationOverlapsMonth(item, data.year, data.month));
-  const monthLeaves = medicalLeaves.filter((item) => medicalLeaveOverlapsMonth(item, data.year, data.month));
-  const memberName = (memberId: string) => data.members.find((item) => item.id === memberId)?.name ?? "Colaborador";
+  const monthVacations = vacations.filter((item) =>
+    vacationOverlapsMonth(item, data.year, data.month),
+  );
+  const monthLeaves = medicalLeaves.filter((item) =>
+    medicalLeaveOverlapsMonth(item, data.year, data.month),
+  );
+  const memberName = (memberId: string) =>
+    data.members.find((item) => item.id === memberId)?.name ?? "Colaborador";
   const vacationNames = monthVacations.length
-    ? monthVacations.map((item) => `${memberName(item.member_id)} (${formatDateBR(item.start_date)} a ${formatDateBR(item.end_date)})`).join("; ")
+    ? monthVacations
+        .map(
+          (item) =>
+            `${memberName(item.member_id)} (${formatDateBR(item.start_date)} a ${formatDateBR(item.end_date)})`,
+        )
+        .join("; ")
     : "Nenhum";
   const leaveNames = monthLeaves.length
     ? monthLeaves
@@ -388,7 +429,7 @@ export async function buildWorkSchedulePdf(data: WorkSchedulePdfExport) {
   doc.text("LEGENDA", margin, legendY);
   doc.setFont("helvetica", "normal");
   doc.text(
-    '24h = plantão 24x72  |  T = diarista  |  FÉR = férias  |  AFT = afastamento médico  |  Verde = cobertura de férias  |  Amarelo claro no cabeçalho = feriado (Angra dos Reis / RJ / nacional)',
+    "24h = plantão 24x72  |  T = diarista  |  FÉR = férias  |  AFT = afastamento médico  |  Verde = cobertura de férias  |  Amarelo claro no cabeçalho = feriado (Angra dos Reis / RJ / nacional)",
     margin + 18,
     legendY,
   );
@@ -429,11 +470,23 @@ export async function buildWorkSchedulePdf(data: WorkSchedulePdfExport) {
   doc.setDrawColor(0, 0, 0);
   doc.setLineWidth(0.25);
   doc.line(signaturesStart, signatureY, signaturesStart + signatureW, signatureY);
-  doc.line(signaturesStart + signatureW + signatureGap, signatureY, signaturesStart + signatureW * 2 + signatureGap, signatureY);
+  doc.line(
+    signaturesStart + signatureW + signatureGap,
+    signatureY,
+    signaturesStart + signatureW * 2 + signatureGap,
+    signatureY,
+  );
   doc.setFont("helvetica", "normal");
   doc.setFontSize(6);
-  doc.text("Responsável pela elaboração", signaturesStart + signatureW / 2, signatureY + 3.5, { align: "center" });
-  doc.text("Responsável pela aprovação", signaturesStart + signatureW + signatureGap + signatureW / 2, signatureY + 3.5, { align: "center" });
+  doc.text("Responsável pela elaboração", signaturesStart + signatureW / 2, signatureY + 3.5, {
+    align: "center",
+  });
+  doc.text(
+    "Responsável pela aprovação",
+    signaturesStart + signatureW + signatureGap + signatureW / 2,
+    signatureY + 3.5,
+    { align: "center" },
+  );
 
   return doc;
 }

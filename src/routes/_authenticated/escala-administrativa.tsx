@@ -14,7 +14,8 @@ export const Route = createFileRoute("/_authenticated/escala-administrativa")({
       { property: "og:title", content: "Escala Administrativa — Sistema Interno ILPI" },
       {
         property: "og:description",
-        content: "Planilha da escala administrativa com os dias de plantão destacados e download em Excel.",
+        content:
+          "Planilha da escala administrativa com os dias de plantão destacados e download em Excel.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

@@ -53,7 +53,11 @@ function PiaPage() {
   const { data: plan, isLoading } = useQuery({
     queryKey: ["care-plan", id],
     queryFn: async () => {
-      const { data, error } = await supabase.from("care_plans").select("*").eq("id", id).maybeSingle();
+      const { data, error } = await supabase
+        .from("care_plans")
+        .select("*")
+        .eq("id", id)
+        .maybeSingle();
       if (error) throw error;
       return data;
     },
@@ -73,6 +77,19 @@ function PiaPage() {
     },
   });
 
+  const save = useMutation({
+    mutationFn: async (patch: CarePlanUpdate) => {
+      const { error } = await supabase.from("care_plans").update(patch).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["care-plan", id] });
+      queryClient.invalidateQueries({ queryKey: ["care-plans"] });
+    },
+    onError: (error) =>
+      toast.error(error instanceof Error ? error.message : "Não foi possível salvar."),
+  });
+
   useEffect(() => {
     if (plan && !loaded && (!plan.resident_id || resident !== undefined)) {
       const stored = (plan.data as FormValues) ?? {};
@@ -88,7 +105,7 @@ function PiaPage() {
       }
       setLoaded(true);
     }
-  }, [plan, resident, loaded]);
+  }, [plan, resident, loaded, save]);
 
   const isMaster = (session?.isMaster ?? false) || (session?.isCoordenacao ?? false);
   const isCoordinator = (session?.isCoordinator ?? false) && !isMaster;
@@ -106,18 +123,6 @@ function PiaPage() {
       description: term?.description,
     });
   }, [plan, closingTerms, councilOptions]);
-
-  const save = useMutation({
-    mutationFn: async (patch: CarePlanUpdate) => {
-      const { error } = await supabase.from("care_plans").update(patch).eq("id", id);
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["care-plan", id] });
-      queryClient.invalidateQueries({ queryKey: ["care-plans"] });
-    },
-    onError: (error) => toast.error(error instanceof Error ? error.message : "Não foi possível salvar."),
-  });
 
   const remove = useMutation({
     mutationFn: async () => {
@@ -196,26 +201,38 @@ function PiaPage() {
 
   return (
     <div className="space-y-6">
-      <Link to="/pia" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
+      <Link
+        to="/pia"
+        className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+      >
         <ArrowLeft className="size-4" /> Planos Individuais
       </Link>
 
       <div className="animate-rise relative overflow-hidden rounded-2xl border border-white/20 bg-gradient-hero p-5 text-white shadow-elevated sm:p-7">
-        <div className="bg-grid-soft pointer-events-none absolute inset-0 opacity-25" aria-hidden="true" />
+        <div
+          className="bg-grid-soft pointer-events-none absolute inset-0 opacity-25"
+          aria-hidden="true"
+        />
         <div className="relative flex flex-wrap items-start justify-between gap-4">
           <div>
-            <p className="text-xs font-medium uppercase tracking-[0.18em] text-white/75">{plan.specialty}</p>
+            <p className="text-xs font-medium uppercase tracking-[0.18em] text-white/75">
+              {plan.specialty}
+            </p>
             <h1 className="font-display mt-1.5 text-2xl font-semibold sm:text-3xl">{spec.title}</h1>
             <p className="mt-1 text-sm text-primary-foreground/80">
               {resident?.full_name || plan.resident_name || "Residente não informado"}
               {plan.period_label ? ` · ${plan.period_label}` : ""}
             </p>
-            {(resident?.admission_date || plan.admission_date || resident?.diagnosis || plan.diagnosis) && (
+            {(resident?.admission_date ||
+              plan.admission_date ||
+              resident?.diagnosis ||
+              plan.diagnosis) && (
               <p className="mt-1 text-xs text-primary-foreground/60">
                 {(resident?.admission_date ?? plan.admission_date)
                   ? `Acolhimento: ${formatResidentDate(resident?.admission_date ?? plan.admission_date)}`
                   : ""}
-                {(resident?.admission_date ?? plan.admission_date) && (resident?.diagnosis ?? plan.diagnosis)
+                {(resident?.admission_date ?? plan.admission_date) &&
+                (resident?.diagnosis ?? plan.diagnosis)
                   ? " · "
                   : ""}
                 {(resident?.diagnosis ?? plan.diagnosis)
@@ -314,7 +331,9 @@ function PiaPage() {
             <Button
               variant="outline"
               disabled={save.isPending}
-              onClick={() => save.mutate(patchOf(), { onSuccess: () => toast.success("Rascunho salvo.") })}
+              onClick={() =>
+                save.mutate(patchOf(), { onSuccess: () => toast.success("Rascunho salvo.") })
+              }
             >
               <Save className="mr-2 size-4" /> Salvar
             </Button>
@@ -341,7 +360,10 @@ function PiaPage() {
               <Button
                 variant="outline"
                 onClick={() =>
-                  save.mutate({ status: "enviado", closed_at: null }, { onSuccess: () => toast.success("PIA reaberto.") })
+                  save.mutate(
+                    { status: "enviado", closed_at: null },
+                    { onSuccess: () => toast.success("PIA reaberto.") },
+                  )
                 }
               >
                 <LockOpen className="mr-2 size-4" /> Reabrir

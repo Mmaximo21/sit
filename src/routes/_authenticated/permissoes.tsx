@@ -58,8 +58,8 @@ function PermissionsPage() {
         </div>
         <h1 className="mt-1 font-display text-2xl font-semibold sm:text-3xl">Permissões de abas</h1>
         <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
-          Escolha, conta por conta, quais abas do menu ficam disponíveis. A própria aba “Permissões de abas”
-          pode ser liberada para outras contas, sem precisar torná-las Administrador.
+          Escolha, conta por conta, quais abas do menu ficam disponíveis. A própria aba “Permissões
+          de abas” pode ser liberada para outras contas, sem precisar torná-las Administrador.
         </p>
       </header>
 

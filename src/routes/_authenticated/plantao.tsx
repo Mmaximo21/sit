@@ -34,12 +34,14 @@ export const Route = createFileRoute("/_authenticated/plantao")({
       { title: "Relatório de Plantão — Sistema Interno ILPI" },
       {
         name: "description",
-        content: "Registre a passagem de plantão, baixe o relatório em A4 e envie o resumo formatado por WhatsApp.",
+        content:
+          "Registre a passagem de plantão, baixe o relatório em A4 e envie o resumo formatado por WhatsApp.",
       },
       { property: "og:title", content: "Relatório de Plantão — Sistema Interno ILPI" },
       {
         property: "og:description",
-        content: "Relatórios de passagem de plantão identificados pelo responsável, com download em A4.",
+        content:
+          "Relatórios de passagem de plantão identificados pelo responsável, com download em A4.",
       },
     ],
   }),
@@ -97,7 +99,8 @@ function PlantaoPage() {
       await queryClient.invalidateQueries({ queryKey: ["shift-reports"] });
       toast.success("Relatório de plantão registrado.");
     },
-    onError: (error) => toast.error(error instanceof Error ? error.message : "Não foi possível salvar."),
+    onError: (error) =>
+      toast.error(error instanceof Error ? error.message : "Não foi possível salvar."),
   });
 
   const remove = useMutation({
@@ -109,9 +112,9 @@ function PlantaoPage() {
       await queryClient.invalidateQueries({ queryKey: ["shift-reports"] });
       toast.success("Relatório excluído.");
     },
-    onError: (error) => toast.error(error instanceof Error ? error.message : "Não foi possível excluir."),
+    onError: (error) =>
+      toast.error(error instanceof Error ? error.message : "Não foi possível excluir."),
   });
-
 
   async function copyForWhatsapp(report: ShiftReport) {
     const text = shiftReportWhatsappText(report);
@@ -133,9 +136,10 @@ function PlantaoPage() {
         </span>
         <h1 className="font-display text-3xl font-semibold tracking-tight">Relatório de Plantão</h1>
         <p className="max-w-2xl text-sm text-muted-foreground">
-          Escreva a passagem de plantão do dia. Ao concluir, o relatório é guardado com a identificação de{" "}
-          <strong className="text-foreground">{authorName || "seu usuário"}</strong> e fica disponível para download em
-          A4 ou envio por WhatsApp.
+          Escreva a passagem de plantão do dia. Ao concluir, o relatório é guardado com a
+          identificação de{" "}
+          <strong className="text-foreground">{authorName || "seu usuário"}</strong> e fica
+          disponível para download em A4 ou envio por WhatsApp.
         </p>
       </header>
 
@@ -172,7 +176,11 @@ function PlantaoPage() {
 
         <div className="flex flex-wrap gap-2">
           <Button onClick={() => save.mutate()} disabled={save.isPending}>
-            {save.isPending ? <Loader2 className="mr-2 size-4 animate-spin" /> : <Save className="mr-2 size-4" />}
+            {save.isPending ? (
+              <Loader2 className="mr-2 size-4 animate-spin" />
+            ) : (
+              <Save className="mr-2 size-4" />
+            )}
             Concluir e guardar
           </Button>
           <Button
@@ -213,14 +221,21 @@ function PlantaoPage() {
                       Plantão de {formatShiftReportDate(report.report_date)}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      {report.author_name} · registrado em {new Date(report.created_at).toLocaleString("pt-BR")}
+                      {report.author_name} · registrado em{" "}
+                      {new Date(report.created_at).toLocaleString("pt-BR")}
                     </p>
                   </div>
                   <Badge variant="secondary">Concluído</Badge>
                 </div>
-                <p className="line-clamp-4 whitespace-pre-wrap text-sm text-muted-foreground">{report.content}</p>
+                <p className="line-clamp-4 whitespace-pre-wrap text-sm text-muted-foreground">
+                  {report.content}
+                </p>
                 <div className="flex flex-wrap gap-2">
-                  <Button size="sm" variant="outline" onClick={() => downloadShiftReportDocx(report)}>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => downloadShiftReportDocx(report)}
+                  >
                     <FileDown className="mr-1.5 size-4" /> Baixar .docx
                   </Button>
                   <Button size="sm" variant="outline" onClick={() => copyForWhatsapp(report)}>
@@ -238,7 +253,11 @@ function PlantaoPage() {
                   {session?.isMaster ? (
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
-                        <Button size="sm" variant="ghost" className="text-destructive hover:text-destructive">
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="text-destructive hover:text-destructive"
+                        >
                           <Trash2 className="mr-1.5 size-4" /> Excluir
                         </Button>
                       </AlertDialogTrigger>
@@ -246,8 +265,8 @@ function PlantaoPage() {
                         <AlertDialogHeader>
                           <AlertDialogTitle>Excluir relatório de plantão?</AlertDialogTitle>
                           <AlertDialogDescription>
-                            O relatório de {formatShiftReportDate(report.report_date)} registrado por{" "}
-                            {report.author_name} será removido definitivamente.
+                            O relatório de {formatShiftReportDate(report.report_date)} registrado
+                            por {report.author_name} será removido definitivamente.
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
@@ -264,7 +283,6 @@ function PlantaoPage() {
                   ) : null}
                 </div>
               </li>
-
             ))}
           </ul>
         )}

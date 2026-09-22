@@ -62,12 +62,13 @@ export function TabPermissionsPanel() {
   const { data: users, isLoading } = useQuery({
     queryKey: ["tab-permissions"],
     queryFn: async (): Promise<PermUser[]> => {
-      const [{ data: profiles }, { data: roles }, { data: scopes }, { data: perms }] = await Promise.all([
-        supabase.from("profiles").select("id,username,full_name,specialty").order("full_name"),
-        supabase.from("user_roles").select("user_id, role"),
-        supabase.from("coordinator_scopes").select("user_id, specialty"),
-        supabase.from("user_tab_permissions").select("user_id, tab, allowed"),
-      ]);
+      const [{ data: profiles }, { data: roles }, { data: scopes }, { data: perms }] =
+        await Promise.all([
+          supabase.from("profiles").select("id,username,full_name,specialty").order("full_name"),
+          supabase.from("user_roles").select("user_id, role"),
+          supabase.from("coordinator_scopes").select("user_id, specialty"),
+          supabase.from("user_tab_permissions").select("user_id, tab, allowed"),
+        ]);
       return (profiles ?? []).map((p) => {
         const myScopes = (scopes ?? []).filter((s) => s.user_id === p.id);
         const overrides: Record<string, boolean> = {};
@@ -78,7 +79,9 @@ export function TabPermissionsPanel() {
           full_name: p.full_name,
           specialty: p.specialty,
           isMaster: (roles ?? []).some((r) => r.user_id === p.id && r.role === "master"),
-          isCoordenacao: (roles ?? []).some((r) => r.user_id === p.id && (r.role as string) === "coordenacao"),
+          isCoordenacao: (roles ?? []).some(
+            (r) => r.user_id === p.id && (r.role as string) === "coordenacao",
+          ),
           isCoordinator: myScopes.length > 0,
           coordinatorScopes: myScopes.some((s) => s.specialty === null)
             ? null
@@ -90,7 +93,15 @@ export function TabPermissionsPanel() {
   });
 
   const setPermission = useMutation({
-    mutationFn: async ({ userId, tab, allowed }: { userId: string; tab: TabKey; allowed: boolean }) => {
+    mutationFn: async ({
+      userId,
+      tab,
+      allowed,
+    }: {
+      userId: string;
+      tab: TabKey;
+      allowed: boolean;
+    }) => {
       const { error } = await supabase
         .from("user_tab_permissions")
         .upsert({ user_id: userId, tab, allowed }, { onConflict: "user_id,tab" });
@@ -179,7 +190,9 @@ export function TabPermissionsPanel() {
                               <button
                                 type="button"
                                 className="underline decoration-dotted hover:text-foreground"
-                                onClick={() => resetPermission.mutate({ userId: u.id, tab: tab.key })}
+                                onClick={() =>
+                                  resetPermission.mutate({ userId: u.id, tab: tab.key })
+                                }
                               >
                                 personalizado · voltar ao padrão
                               </button>

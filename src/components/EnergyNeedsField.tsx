@@ -51,8 +51,7 @@ export function EnergyNeedsField({
     onChange({ ...value, conditions: checked ? [...base, id] : base });
   };
 
-  const adherence =
-    offeredKcal && result.total > 0 ? (offeredKcal / result.total) * 100 : null;
+  const adherence = offeredKcal && result.total > 0 ? (offeredKcal / result.total) * 100 : null;
 
   return (
     <div className="space-y-6">
@@ -145,9 +144,7 @@ export function EnergyNeedsField({
             disabled={Boolean(readOnly)}
             onChange={(e) => set("temperature", Number(e.target.value))}
           />
-          <p className="text-xs text-muted-foreground">
-            Acréscimo de 13% por grau acima de 37 °C.
-          </p>
+          <p className="text-xs text-muted-foreground">Acréscimo de 13% por grau acima de 37 °C.</p>
         </div>
       </div>
 
@@ -316,8 +313,8 @@ export function EnergyNeedsField({
         ) : null}
         {offeredProtein && result.protein > 0 ? (
           <Badge variant="secondary">
-            Proteína ofertada: {n1(offeredProtein)} g ({n0((offeredProtein / result.protein) * 100)}%
-            da meta)
+            Proteína ofertada: {n1(offeredProtein)} g ({n0((offeredProtein / result.protein) * 100)}
+            % da meta)
           </Badge>
         ) : null}
       </div>

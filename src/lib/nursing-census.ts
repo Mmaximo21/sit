@@ -90,7 +90,8 @@ export function mergeCensusRows(
   });
 }
 
-
 export function censusFilledCount(rows: CensusRow[]) {
-  return rows.filter((row) => CENSUS_COLUMNS.some((c) => c.key !== "dn" && String(row[c.key] ?? "").trim())).length;
+  return rows.filter((row) =>
+    CENSUS_COLUMNS.some((c) => c.key !== "dn" && String(row[c.key] ?? "").trim()),
+  ).length;
 }

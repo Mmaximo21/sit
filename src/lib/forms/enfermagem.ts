@@ -95,7 +95,16 @@ export const enfermagemForm: FormSpec = {
               key: "via",
               label: "Via",
               type: "select",
-              options: ["Oral", "Sublingual", "Subcutânea", "Intramuscular", "Intravenosa", "Tópica", "Oftálmica", "Inalatória"],
+              options: [
+                "Oral",
+                "Sublingual",
+                "Subcutânea",
+                "Intramuscular",
+                "Intravenosa",
+                "Tópica",
+                "Oftálmica",
+                "Inalatória",
+              ],
             },
             {
               key: "posologia",
@@ -107,7 +116,12 @@ export const enfermagemForm: FormSpec = {
           ],
           rows: [{}, {}, {}, {}, {}],
         },
-        { type: "textarea", key: "medicamentos_obs", label: "Observações / medicações SOS", rows: 3 },
+        {
+          type: "textarea",
+          key: "medicamentos_obs",
+          label: "Observações / medicações SOS",
+          rows: 3,
+        },
       ],
     },
     {

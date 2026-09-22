@@ -75,7 +75,10 @@ export function normalizeName(value: string) {
 }
 
 /** Nome exibido para um afastamento médico. */
-export function medicalLeaveName(leave: ShiftMedicalLeave, members: { id: string; name: string }[] = []) {
+export function medicalLeaveName(
+  leave: ShiftMedicalLeave,
+  members: { id: string; name: string }[] = [],
+) {
   if (leave.member_name?.trim()) return leave.member_name.trim();
   return members.find((item) => item.id === leave.member_id)?.name ?? "Colaborador";
 }
@@ -212,7 +215,11 @@ export function isWorkDay(shift: Shift, anchorDate: string, dayISO: string) {
 }
 
 /** Plantão do colaborador na data informada, considerando as rotatividades já em vigor. */
-export function memberShiftOn(member: ShiftMember, rotations: ShiftRotation[], dayISO: string): Shift {
+export function memberShiftOn(
+  member: ShiftMember,
+  rotations: ShiftRotation[],
+  dayISO: string,
+): Shift {
   const applied = rotations
     .filter((rotation) => rotation.member_id === member.id && rotation.effective_date <= dayISO)
     .sort((a, b) => a.effective_date.localeCompare(b.effective_date));
@@ -269,6 +276,12 @@ export function daysFromToday(dayISO: string) {
   return daysBetween(todayISO(), dayISO);
 }
 
-export function shiftWorkDaysInMonth(shift: Shift, anchorDate: string, year: number, month: number) {
-  return monthDates(year, month).filter((date) => isWorkDay(shift, anchorDate, toISODate(date))).length;
+export function shiftWorkDaysInMonth(
+  shift: Shift,
+  anchorDate: string,
+  year: number,
+  month: number,
+) {
+  return monthDates(year, month).filter((date) => isWorkDay(shift, anchorDate, toISODate(date)))
+    .length;
 }

@@ -5,7 +5,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Plus, Trash2 } from "lucide-react";
 import { AttachmentsField } from "@/components/AttachmentsField";
@@ -26,7 +32,11 @@ function formatNumber(n: number) {
   return Number.isInteger(n) ? String(n) : String(n).replace(".", ",");
 }
 
-function computeSum(field: Extract<Field, { type: "computed" }>, values: FormValues, spec: FormSpec): number {
+function computeSum(
+  field: Extract<Field, { type: "computed" }>,
+  values: FormValues,
+  spec: FormSpec,
+): number {
   let total = 0;
   for (const key of field.sum) {
     const target = findField(spec, key);
@@ -52,62 +62,73 @@ type Props = {
   assessmentId?: string | undefined;
 };
 
-export function FormRenderer({ spec, values, onChange, readOnly = false, highlight, assessmentId }: Props) {
+export function FormRenderer({
+  spec,
+  values,
+  onChange,
+  readOnly = false,
+  highlight,
+  assessmentId,
+}: Props) {
   return (
     <div className="space-y-8">
       {spec.sections.map((section, index) => {
         const numberedTitle = parseSectionTitle(section.title);
         const isClosing = section.fields.some((f) => f.key === "data_encerramento");
-        return <section
-          key={section.title}
-          id={sectionSlug(section.title)}
-          className="scroll-mt-24 rounded-2xl border border-border bg-card p-5 shadow-soft sm:p-7"
-        >
-          <header className="mb-5 flex items-start gap-3 border-b border-border pb-3">
-            {isClosing ? null : (
-              <span className="font-display mt-0.5 grid h-8 min-w-8 shrink-0 place-items-center rounded-lg bg-primary/10 px-1.5 text-sm font-semibold text-primary">
-                {numberedTitle.number ?? index + 1}
-              </span>
-            )}
-            <div>
-              <h2 className="font-display text-lg font-semibold text-foreground">{numberedTitle.title}</h2>
-              {section.subtitle ? (
-                <p className="mt-1 text-sm font-semibold uppercase text-foreground">{section.subtitle}</p>
-              ) : null}
-              {section.description ? (
-                <p className="mt-1 text-sm text-muted-foreground">{section.description}</p>
-              ) : null}
-            </div>
-          </header>
-          <div className="space-y-5">
-            {section.fields.map((field) => (
-              <div
-                key={field.key}
-                data-field={field.key}
-                className={
-                  highlight?.has(field.key)
-                    ? "scroll-mt-28 rounded-lg bg-destructive/5 p-3 ring-1 ring-destructive/40"
-                    : "scroll-mt-28"
-                }
-              >
-                <FieldView
-                  field={field}
-                  spec={spec}
-                  values={values}
-                  onChange={onChange}
-                  readOnly={readOnly}
-                  assessmentId={assessmentId}
-                />
-
+        return (
+          <section
+            key={section.title}
+            id={sectionSlug(section.title)}
+            className="scroll-mt-24 rounded-2xl border border-border bg-card p-5 shadow-soft sm:p-7"
+          >
+            <header className="mb-5 flex items-start gap-3 border-b border-border pb-3">
+              {isClosing ? null : (
+                <span className="font-display mt-0.5 grid h-8 min-w-8 shrink-0 place-items-center rounded-lg bg-primary/10 px-1.5 text-sm font-semibold text-primary">
+                  {numberedTitle.number ?? index + 1}
+                </span>
+              )}
+              <div>
+                <h2 className="font-display text-lg font-semibold text-foreground">
+                  {numberedTitle.title}
+                </h2>
+                {section.subtitle ? (
+                  <p className="mt-1 text-sm font-semibold uppercase text-foreground">
+                    {section.subtitle}
+                  </p>
+                ) : null}
+                {section.description ? (
+                  <p className="mt-1 text-sm text-muted-foreground">{section.description}</p>
+                ) : null}
               </div>
-            ))}
-          </div>
-        </section>;
+            </header>
+            <div className="space-y-5">
+              {section.fields.map((field) => (
+                <div
+                  key={field.key}
+                  data-field={field.key}
+                  className={
+                    highlight?.has(field.key)
+                      ? "scroll-mt-28 rounded-lg bg-destructive/5 p-3 ring-1 ring-destructive/40"
+                      : "scroll-mt-28"
+                  }
+                >
+                  <FieldView
+                    field={field}
+                    spec={spec}
+                    values={values}
+                    onChange={onChange}
+                    readOnly={readOnly}
+                    assessmentId={assessmentId}
+                  />
+                </div>
+              ))}
+            </div>
+          </section>
+        );
       })}
     </div>
   );
 }
-
 
 function FieldView({
   field,
@@ -118,7 +139,6 @@ function FieldView({
   assessmentId,
 }: Props & { field: Field }) {
   const value = values[field.key];
-
 
   switch (field.type) {
     case "note":
@@ -134,7 +154,9 @@ function FieldView({
         <Row label={field.label} required={"required" in field ? field.required : undefined}>
           <Input
             type={field.type === "date" ? "date" : "text"}
-            className={field.required && !String(value ?? "").trim() ? "border-destructive/60" : undefined}
+            className={
+              field.required && !String(value ?? "").trim() ? "border-destructive/60" : undefined
+            }
             value={(value as string) ?? ""}
             placeholder={field.type === "text" ? field.placeholder : undefined}
             disabled={Boolean(readOnly)}
@@ -145,7 +167,10 @@ function FieldView({
 
     case "number":
       return (
-        <Row label={field.suffix ? `${field.label} (${field.suffix})` : field.label} required={field.required}>
+        <Row
+          label={field.suffix ? `${field.label} (${field.suffix})` : field.label}
+          required={field.required}
+        >
           <Input
             type="text"
             inputMode="decimal"
@@ -171,31 +196,54 @@ function FieldView({
 
     case "select":
       return (
-        <Row label={field.label} hint={field.hint} required={"required" in field ? field.required : undefined}>
+        <Row
+          label={field.label}
+          hint={field.hint}
+          required={"required" in field ? field.required : undefined}
+        >
           <Select
             value={(value as string) ?? ""}
             disabled={Boolean(readOnly)}
             onValueChange={(next) => onChange(field.key, next)}
           >
-            <SelectTrigger className={field.required && !String(value ?? "").trim() ? "border-destructive/60" : undefined}>
+            <SelectTrigger
+              className={
+                field.required && !String(value ?? "").trim() ? "border-destructive/60" : undefined
+              }
+            >
               <SelectValue placeholder="Selecione…" />
             </SelectTrigger>
-            <SelectContent>{field.options.map((opt) => <SelectItem key={opt} value={opt}>{opt}</SelectItem>)}</SelectContent>
+            <SelectContent>
+              {field.options.map((opt) => (
+                <SelectItem key={opt} value={opt}>
+                  {opt}
+                </SelectItem>
+              ))}
+            </SelectContent>
           </Select>
         </Row>
       );
 
     case "radio":
       return (
-        <Row label={field.label} hint={field.hint} required={"required" in field ? field.required : undefined}>
+        <Row
+          label={field.label}
+          hint={field.hint}
+          required={"required" in field ? field.required : undefined}
+        >
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
-            <RadioGroup value={(value as string) ?? ""} onValueChange={(next) => onChange(field.key, next)} disabled={readOnly} className="flex flex-wrap gap-x-5 gap-y-2">
-            {field.options.map((opt) => (
-              <label key={opt} className="flex cursor-pointer items-center gap-2 text-sm">
-                <RadioGroupItem value={opt} />
-                {opt}
-              </label>
-            ))}
+            <RadioGroup
+              value={(value as string) ?? ""}
+              onValueChange={(next) => onChange(field.key, next)}
+              disabled={readOnly}
+              className="flex flex-wrap gap-x-5 gap-y-2"
+            >
+              {field.options.map((opt) => (
+                <label key={opt} className="flex cursor-pointer items-center gap-2 text-sm">
+                  <RadioGroupItem value={opt} />
+                  {opt}
+                </label>
+              ))}
             </RadioGroup>
             {!readOnly && value ? (
               <Button
@@ -232,8 +280,15 @@ function FieldView({
           <div className="grid gap-3 sm:grid-cols-2">
             {field.sides.map((side) => (
               <div key={side} className="rounded-md border border-border bg-muted/40 p-3">
-                <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">{side}</p>
-                <RadioGroup value={record[side] ?? ""} onValueChange={(next) => onChange(field.key, { ...record, [side]: next })} disabled={readOnly} className="flex flex-wrap gap-4">
+                <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  {side}
+                </p>
+                <RadioGroup
+                  value={record[side] ?? ""}
+                  onValueChange={(next) => onChange(field.key, { ...record, [side]: next })}
+                  disabled={readOnly}
+                  className="flex flex-wrap gap-4"
+                >
                   {field.options.map((opt) => (
                     <label key={opt} className="flex cursor-pointer items-center gap-2 text-sm">
                       <RadioGroupItem value={opt} />
@@ -260,9 +315,7 @@ function FieldView({
     }
 
     case "table":
-      return (
-        <TableField field={field} value={value} onChange={onChange} readOnly={readOnly} />
-      );
+      return <TableField field={field} value={value} onChange={onChange} readOnly={readOnly} />;
 
     case "calorias":
       return (
@@ -288,8 +341,6 @@ function FieldView({
           onChange={(next: AssessmentAttachment[]) => onChange(field.key, next)}
         />
       ) : null;
-
-
 
     default:
       return null;
@@ -325,7 +376,10 @@ function TableField({
           <thead className="bg-muted/60">
             <tr>
               {field.columns.map((col) => (
-                <th key={col.key} className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                <th
+                  key={col.key}
+                  className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground"
+                >
                   {col.label}
                 </th>
               ))}
@@ -351,7 +405,12 @@ function TableField({
                       type="button"
                       variant="ghost"
                       size="icon"
-                      onClick={() => onChange(field.key, rows.filter((_, i) => i !== index))}
+                      onClick={() =>
+                        onChange(
+                          field.key,
+                          rows.filter((_, i) => i !== index),
+                        )
+                      }
                       aria-label="Remover linha"
                     >
                       <Trash2 className="size-4" />
@@ -364,7 +423,12 @@ function TableField({
         </table>
       </div>
       {!readOnly && field.addable ? (
-        <Button type="button" variant="outline" size="sm" onClick={() => onChange(field.key, [...rows, {}])}>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={() => onChange(field.key, [...rows, {}])}
+        >
           <Plus className="mr-1 size-4" /> Adicionar linha
         </Button>
       ) : null}
@@ -385,18 +449,26 @@ function Cell({
 }) {
   if (col.type === "checkbox") {
     return (
-      <Checkbox checked={Boolean(value)} disabled={readOnly} onCheckedChange={(c) => onChange(Boolean(c))} />
+      <Checkbox
+        checked={Boolean(value)}
+        disabled={readOnly}
+        onCheckedChange={(c) => onChange(Boolean(c))}
+      />
     );
   }
   if (col.type === "select") {
     return (
-      <Select
-        value={(value as string) ?? ""}
-        disabled={Boolean(readOnly)}
-        onValueChange={onChange}
-      >
-        <SelectTrigger className="h-9"><SelectValue placeholder="Selecione…" /></SelectTrigger>
-        <SelectContent>{(col.options ?? []).map((opt) => <SelectItem key={opt} value={opt}>{opt}</SelectItem>)}</SelectContent>
+      <Select value={(value as string) ?? ""} disabled={Boolean(readOnly)} onValueChange={onChange}>
+        <SelectTrigger className="h-9">
+          <SelectValue placeholder="Selecione…" />
+        </SelectTrigger>
+        <SelectContent>
+          {(col.options ?? []).map((opt) => (
+            <SelectItem key={opt} value={opt}>
+              {opt}
+            </SelectItem>
+          ))}
+        </SelectContent>
       </Select>
     );
   }
@@ -427,7 +499,11 @@ function Row({
       <div>
         <Label className="text-sm font-medium leading-snug">
           {label}
-          {required ? <span className="ml-1 text-destructive" title="Campo obrigatório">*</span> : null}
+          {required ? (
+            <span className="ml-1 text-destructive" title="Campo obrigatório">
+              *
+            </span>
+          ) : null}
         </Label>
         {hint ? <p className="mt-1 text-xs text-muted-foreground">{hint}</p> : null}
       </div>

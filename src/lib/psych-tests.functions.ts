@@ -26,8 +26,11 @@ export const createTestUploadUrl = createServerFn({ method: "POST" })
       .slice(-120);
     const path = `${PREFIX}/${data.assessmentId}/${Date.now()}-${crypto.randomUUID().slice(0, 8)}-${safeName}`;
 
-    const { data: signed, error } = await supabaseAdmin.storage.from(BUCKET).createSignedUploadUrl(path);
-    if (error || !signed) throw new Error(error?.message ?? "Não foi possível preparar o envio do arquivo.");
+    const { data: signed, error } = await supabaseAdmin.storage
+      .from(BUCKET)
+      .createSignedUploadUrl(path);
+    if (error || !signed)
+      throw new Error(error?.message ?? "Não foi possível preparar o envio do arquivo.");
 
     return { path: signed.path, token: signed.token };
   });
@@ -44,7 +47,8 @@ export const getTestFileUrl = createServerFn({ method: "POST" })
     const { data: signed, error } = await supabaseAdmin.storage
       .from(BUCKET)
       .createSignedUrl(data.path, 60 * 10, { download: data.fileName });
-    if (error || !signed) throw new Error(error?.message ?? "Não foi possível gerar o link do arquivo.");
+    if (error || !signed)
+      throw new Error(error?.message ?? "Não foi possível gerar o link do arquivo.");
     return { url: signed.signedUrl };
   });
 

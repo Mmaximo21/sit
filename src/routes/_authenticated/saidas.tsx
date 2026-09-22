@@ -33,7 +33,17 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { DoorOpen, Download, FileDown, FileText, Loader2, Paperclip, Save, Trash2, X } from "lucide-react";
+import {
+  DoorOpen,
+  Download,
+  FileDown,
+  FileText,
+  Loader2,
+  Paperclip,
+  Save,
+  Trash2,
+  X,
+} from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/saidas")({
@@ -48,7 +58,8 @@ export const Route = createFileRoute("/_authenticated/saidas")({
       { property: "og:title", content: "Saídas — Sistema Interno ILPI" },
       {
         property: "og:description",
-        content: "Documentos e relatórios de desacolhimento e óbito dos residentes, guardados com segurança.",
+        content:
+          "Documentos e relatórios de desacolhimento e óbito dos residentes, guardados com segurança.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -164,7 +175,8 @@ function SaidasPage() {
       await queryClient.invalidateQueries({ queryKey: ["resident-exits"] });
       toast.success(editing ? "Registro de saída atualizado." : "Saída registrada.");
     },
-    onError: (error) => toast.error(error instanceof Error ? error.message : "Não foi possível salvar."),
+    onError: (error) =>
+      toast.error(error instanceof Error ? error.message : "Não foi possível salvar."),
   });
 
   const remove = useMutation({
@@ -177,7 +189,8 @@ function SaidasPage() {
       await queryClient.invalidateQueries({ queryKey: ["resident-exits"] });
       toast.success("Registro excluído.");
     },
-    onError: (error) => toast.error(error instanceof Error ? error.message : "Não foi possível excluir."),
+    onError: (error) =>
+      toast.error(error instanceof Error ? error.message : "Não foi possível excluir."),
   });
 
   async function addFile(file: File) {
@@ -224,8 +237,8 @@ function SaidasPage() {
         </span>
         <h1 className="font-display text-3xl font-semibold tracking-tight">Saídas</h1>
         <p className="max-w-2xl text-sm text-muted-foreground">
-          Registre desacolhimentos e óbitos com relatório completo e anexe os documentos comprobatórios. Cada
-          registro pode ser baixado em documento A4.
+          Registre desacolhimentos e óbitos com relatório completo e anexe os documentos
+          comprobatórios. Cada registro pode ser baixado em documento A4.
         </p>
       </header>
 
@@ -289,22 +302,30 @@ function SaidasPage() {
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2">
             <Label htmlFor="exit-destination">
-              {exitType === "Óbito" ? "Local do óbito / funerária" : "Destino e responsável pela retirada"}
+              {exitType === "Óbito"
+                ? "Local do óbito / funerária"
+                : "Destino e responsável pela retirada"}
             </Label>
             <Input
               id="exit-destination"
               value={destination}
               onChange={(event) => setDestination(event.target.value)}
-              placeholder={exitType === "Óbito" ? "Ex.: Hospital Municipal" : "Ex.: Família — filho João"}
+              placeholder={
+                exitType === "Óbito" ? "Ex.: Hospital Municipal" : "Ex.: Família — filho João"
+              }
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="exit-cause">{exitType === "Óbito" ? "Causa do óbito" : "Motivo do desacolhimento"}</Label>
+            <Label htmlFor="exit-cause">
+              {exitType === "Óbito" ? "Causa do óbito" : "Motivo do desacolhimento"}
+            </Label>
             <Input
               id="exit-cause"
               value={cause}
               onChange={(event) => setCause(event.target.value)}
-              placeholder={exitType === "Óbito" ? "Conforme declaração de óbito" : "Ex.: reintegração familiar"}
+              placeholder={
+                exitType === "Óbito" ? "Conforme declaração de óbito" : "Ex.: reintegração familiar"
+              }
             />
           </div>
         </div>
@@ -333,12 +354,24 @@ function SaidasPage() {
               if (file) void addFile(file);
             }}
           />
-          <Button type="button" variant="outline" size="sm" disabled={uploading} onClick={() => fileInput.current?.click()}>
-            {uploading ? <Loader2 className="mr-2 size-4 animate-spin" /> : <Paperclip className="mr-2 size-4" />}
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            disabled={uploading}
+            onClick={() => fileInput.current?.click()}
+          >
+            {uploading ? (
+              <Loader2 className="mr-2 size-4 animate-spin" />
+            ) : (
+              <Paperclip className="mr-2 size-4" />
+            )}
             Anexar documento
           </Button>
           {attachments.length === 0 ? (
-            <p className="text-xs text-muted-foreground">Nenhum documento anexado ainda (até 25 MB por arquivo).</p>
+            <p className="text-xs text-muted-foreground">
+              Nenhum documento anexado ainda (até 25 MB por arquivo).
+            </p>
           ) : (
             <ul className="space-y-2">
               {attachments.map((file) => (
@@ -351,7 +384,13 @@ function SaidasPage() {
                     <span className="truncate">{file.name}</span>
                   </span>
                   <span className="flex items-center gap-1">
-                    <Button type="button" variant="ghost" size="icon" aria-label="Abrir" onClick={() => void openFile(file.path)}>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      aria-label="Abrir"
+                      onClick={() => void openFile(file.path)}
+                    >
                       <Download className="size-4" />
                     </Button>
                     <Button
@@ -375,7 +414,11 @@ function SaidasPage() {
 
         <div className="flex flex-wrap gap-2">
           <Button onClick={() => save.mutate()} disabled={save.isPending}>
-            {save.isPending ? <Loader2 className="mr-2 size-4 animate-spin" /> : <Save className="mr-2 size-4" />}
+            {save.isPending ? (
+              <Loader2 className="mr-2 size-4 animate-spin" />
+            ) : (
+              <Save className="mr-2 size-4" />
+            )}
             {editingId ? "Salvar alterações" : "Registrar saída"}
           </Button>
           {editingId ? (
@@ -411,7 +454,9 @@ function SaidasPage() {
                         {formatExitDate(row.exit_date)} · registrado por {row.author_name}
                       </p>
                     </div>
-                    <Badge variant={row.exit_type === "Óbito" ? "destructive" : "secondary"}>{row.exit_type}</Badge>
+                    <Badge variant={row.exit_type === "Óbito" ? "destructive" : "secondary"}>
+                      {row.exit_type}
+                    </Badge>
                   </div>
 
                   {row.destination || row.cause ? (
@@ -422,7 +467,9 @@ function SaidasPage() {
                     </p>
                   ) : null}
 
-                  <p className="line-clamp-4 whitespace-pre-wrap text-sm text-muted-foreground">{row.report}</p>
+                  <p className="line-clamp-4 whitespace-pre-wrap text-sm text-muted-foreground">
+                    {row.report}
+                  </p>
 
                   {files.length ? (
                     <div className="flex flex-wrap gap-2">
@@ -468,7 +515,11 @@ function SaidasPage() {
                     {session?.isMaster ? (
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
-                          <Button size="sm" variant="ghost" className="text-destructive hover:text-destructive">
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="text-destructive hover:text-destructive"
+                          >
                             <Trash2 className="mr-1.5 size-4" /> Excluir
                           </Button>
                         </AlertDialogTrigger>
@@ -476,8 +527,8 @@ function SaidasPage() {
                           <AlertDialogHeader>
                             <AlertDialogTitle>Excluir registro de saída?</AlertDialogTitle>
                             <AlertDialogDescription>
-                              O registro de {row.resident_name} ({row.exit_type}) e os documentos anexados serão
-                              removidos definitivamente.
+                              O registro de {row.resident_name} ({row.exit_type}) e os documentos
+                              anexados serão removidos definitivamente.
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>

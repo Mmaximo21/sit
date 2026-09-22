@@ -12,7 +12,10 @@ export const Route = createFileRoute("/_authenticated/chat/$threadId")({
         content:
           "Central de Protocolos Clínicos e Apoio Assistencial da I.L.P.I. Luiza Olindina da Silva Alves.",
       },
-      { property: "og:title", content: "Central de Protocolos Clínicos — Sistema Interno I.L.P.I." },
+      {
+        property: "og:title",
+        content: "Central de Protocolos Clínicos — Sistema Interno I.L.P.I.",
+      },
       {
         property: "og:description",
         content: "Pesquisa de protocolos, escalas geriátricas e apoio à decisão multiprofissional.",
@@ -39,14 +42,16 @@ function ChatThreadPage() {
             <ShieldCheck className="size-3" /> Padrão ONA
           </span>
         </div>
-        <h1 className="mt-1 font-display text-2xl font-semibold sm:text-3xl">Central de Protocolos Clínicos</h1>
+        <h1 className="mt-1 font-display text-2xl font-semibold sm:text-3xl">
+          Central de Protocolos Clínicos
+        </h1>
         <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
-          Consulte protocolos assistenciais, escalas geriátricas validadas e boas práticas multiprofissionais.
-          Cada setor dispõe de até 10 consultas diárias para assegurar o uso equilibrado e focado.
+          Consulte protocolos assistenciais, escalas geriátricas validadas e boas práticas
+          multiprofissionais. Cada setor dispõe de até 10 consultas diárias para assegurar o uso
+          equilibrado e focado.
         </p>
       </header>
       <ChatWorkspace key={threadId} threadId={threadId} />
     </>
   );
 }
-

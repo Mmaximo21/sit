@@ -28,7 +28,10 @@ export const Route = createFileRoute("/_authenticated/avaliacao/$id")({
   head: () => ({
     meta: [
       { title: "Preenchimento da avaliação — AGA ILPI" },
-      { name: "description", content: "Preencha e envie o formulário da avaliação geriátrica ampla." },
+      {
+        name: "description",
+        content: "Preencha e envie o formulário da avaliação geriátrica ampla.",
+      },
       { property: "og:title", content: "Preenchimento da avaliação — AGA ILPI" },
       { property: "og:description", content: "Formulário padronizado da especialidade." },
     ],
@@ -55,7 +58,11 @@ function AvaliacaoPage() {
   const { data: assessment, isLoading } = useQuery({
     queryKey: ["assessment", id],
     queryFn: async () => {
-      const { data, error } = await supabase.from("assessments").select("*").eq("id", id).maybeSingle();
+      const { data, error } = await supabase
+        .from("assessments")
+        .select("*")
+        .eq("id", id)
+        .maybeSingle();
       if (error) throw error;
       return data;
     },
@@ -107,7 +114,6 @@ function AvaliacaoPage() {
     });
   }, [assessment, closingTerms, councilOptions]);
 
-
   const save = useMutation({
     mutationFn: async (patch: AssessmentUpdate) => {
       const { error } = await supabase.from("assessments").update(patch).eq("id", id);
@@ -117,7 +123,8 @@ function AvaliacaoPage() {
       queryClient.invalidateQueries({ queryKey: ["assessment", id] });
       queryClient.invalidateQueries({ queryKey: ["assessments"] });
     },
-    onError: (error) => toast.error(error instanceof Error ? error.message : "Não foi possível salvar."),
+    onError: (error) =>
+      toast.error(error instanceof Error ? error.message : "Não foi possível salvar."),
   });
 
   const remove = useMutation({
@@ -135,7 +142,8 @@ function AvaliacaoPage() {
   const requireComplete = () => {
     if (!spec) return false;
     const missing = missingRequiredFields(spec, values);
-    if (!residentName.trim()) missing.unshift({ type: "text", key: "resident_name", label: "Residente" });
+    if (!residentName.trim())
+      missing.unshift({ type: "text", key: "resident_name", label: "Residente" });
     if (missing.length) {
       setMissingKeys(new Set(missing.map((f) => f.key)));
       toast.error(
@@ -196,7 +204,9 @@ function AvaliacaoPage() {
   if (!assessment || !spec)
     return (
       <div className="space-y-4">
-        <p className="text-muted-foreground">Avaliação não encontrada ou sem permissão de acesso.</p>
+        <p className="text-muted-foreground">
+          Avaliação não encontrada ou sem permissão de acesso.
+        </p>
         <Link to="/painel" className="text-primary hover:underline">
           Voltar ao painel
         </Link>
@@ -205,25 +215,37 @@ function AvaliacaoPage() {
 
   return (
     <div className="space-y-6">
-      <Link to="/painel" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
+      <Link
+        to="/painel"
+        className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+      >
         <ArrowLeft className="size-4" /> Painel
       </Link>
 
       <div className="animate-rise relative overflow-hidden rounded-2xl border border-white/20 bg-gradient-hero p-5 text-white shadow-elevated sm:p-7">
-        <div className="bg-grid-soft pointer-events-none absolute inset-0 opacity-25" aria-hidden="true" />
+        <div
+          className="bg-grid-soft pointer-events-none absolute inset-0 opacity-25"
+          aria-hidden="true"
+        />
         <div className="relative flex flex-wrap items-start justify-between gap-4">
           <div>
             <p className="text-xs font-medium uppercase tracking-[0.18em] text-white/75">
               {assessment.specialty}
             </p>
             <h1 className="font-display mt-1.5 text-2xl font-semibold sm:text-3xl">{spec.title}</h1>
-            <p className="mt-1 text-sm text-primary-foreground/80">{residentName || "Residente não informado"}</p>
-            {(resident?.admission_date || assessment.admission_date || resident?.diagnosis || assessment.diagnosis) ? (
+            <p className="mt-1 text-sm text-primary-foreground/80">
+              {residentName || "Residente não informado"}
+            </p>
+            {resident?.admission_date ||
+            assessment.admission_date ||
+            resident?.diagnosis ||
+            assessment.diagnosis ? (
               <p className="mt-1 text-xs text-primary-foreground/60">
                 {(resident?.admission_date ?? assessment.admission_date)
                   ? `Acolhimento: ${formatResidentDate(resident?.admission_date ?? assessment.admission_date)}`
                   : ""}
-                {(resident?.admission_date ?? assessment.admission_date) && (resident?.diagnosis ?? assessment.diagnosis)
+                {(resident?.admission_date ?? assessment.admission_date) &&
+                (resident?.diagnosis ?? assessment.diagnosis)
                   ? " · "
                   : ""}
                 {(resident?.diagnosis ?? assessment.diagnosis)
@@ -270,14 +292,17 @@ function AvaliacaoPage() {
 
       {readOnly ? (
         <div className="flex items-center gap-2 rounded-xl border border-border bg-muted/50 p-4 text-sm text-muted-foreground">
-          <Lock className="size-4" /> Esta avaliação foi fechada pela administração e está somente para leitura.
+          <Lock className="size-4" /> Esta avaliação foi fechada pela administração e está somente
+          para leitura.
         </div>
       ) : null}
 
       <div className="grid gap-6 lg:grid-cols-[16rem_minmax(0,1fr)]">
         <aside className="hidden lg:block">
           <nav className="card-surface sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto p-3">
-            <p className="px-2 pb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Seções</p>
+            <p className="px-2 pb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              Seções
+            </p>
             <ol className="space-y-0.5">
               {(progress?.sections ?? []).map((section, index) => {
                 const complete = section.total > 0 && section.filled === section.total;
@@ -347,7 +372,6 @@ function AvaliacaoPage() {
           />
         </div>
       </div>
-
 
       {isMaster ? (
         <div className="card-surface p-5">

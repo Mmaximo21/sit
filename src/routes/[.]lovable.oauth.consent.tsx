@@ -10,9 +10,15 @@ type OAuthDetails = {
 };
 
 type OAuthApi = {
-  getAuthorizationDetails: (id: string) => Promise<{ data: OAuthDetails | null; error: { message: string } | null }>;
-  approveAuthorization: (id: string) => Promise<{ data: OAuthDetails | null; error: { message: string } | null }>;
-  denyAuthorization: (id: string) => Promise<{ data: OAuthDetails | null; error: { message: string } | null }>;
+  getAuthorizationDetails: (
+    id: string,
+  ) => Promise<{ data: OAuthDetails | null; error: { message: string } | null }>;
+  approveAuthorization: (
+    id: string,
+  ) => Promise<{ data: OAuthDetails | null; error: { message: string } | null }>;
+  denyAuthorization: (
+    id: string,
+  ) => Promise<{ data: OAuthDetails | null; error: { message: string } | null }>;
 };
 
 function oauthApi(): OAuthApi {
@@ -42,7 +48,8 @@ export const Route = createFileRoute("/.lovable/oauth/consent")({
   errorComponent: ({ error }) => (
     <main className="grid min-h-screen place-items-center bg-login-bg p-6 text-login-ink">
       <p className="max-w-md text-center text-sm">
-        Não foi possível carregar este pedido de autorização: {String((error as Error)?.message ?? error)}
+        Não foi possível carregar este pedido de autorização:{" "}
+        {String((error as Error)?.message ?? error)}
       </p>
     </main>
   ),
@@ -82,7 +89,8 @@ function Consent() {
         <ShieldCheck className="mb-4 size-8 text-login-teal" />
         <h1 className="font-display text-lg font-medium">Conectar {clientName} à sua conta</h1>
         <p className="mt-3 text-sm text-login-ink/75">
-          {clientName} poderá consultar os dados do Sistema Interno com as mesmas permissões da sua conta.
+          {clientName} poderá consultar os dados do Sistema Interno com as mesmas permissões da sua
+          conta.
         </p>
         {error ? (
           <p role="alert" className="mt-4 text-sm text-red-300">

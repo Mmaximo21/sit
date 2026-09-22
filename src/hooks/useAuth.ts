@@ -18,7 +18,10 @@ export type SessionInfo = {
 };
 
 /** Especialidade sob responsabilidade da conta (master vê tudo). */
-export function canSupervise(session: SessionInfo | null | undefined, specialty: string | null | undefined) {
+export function canSupervise(
+  session: SessionInfo | null | undefined,
+  specialty: string | null | undefined,
+) {
   if (!session) return false;
   if (session.isMaster || session.isCoordenacao) return true;
   if (!session.isCoordinator) return false;
@@ -54,12 +57,13 @@ export function useAuth() {
       const user = userData.user;
       if (!user) return null;
 
-      const [{ data: profile }, { data: roles }, { data: scopes }, { data: tabPerms }] = await Promise.all([
-        supabase.from("profiles").select("*").eq("id", user.id).maybeSingle(),
-        supabase.from("user_roles").select("role").eq("user_id", user.id),
-        supabase.from("coordinator_scopes").select("specialty").eq("user_id", user.id),
-        supabase.from("user_tab_permissions").select("tab, allowed").eq("user_id", user.id),
-      ]);
+      const [{ data: profile }, { data: roles }, { data: scopes }, { data: tabPerms }] =
+        await Promise.all([
+          supabase.from("profiles").select("*").eq("id", user.id).maybeSingle(),
+          supabase.from("user_roles").select("role").eq("user_id", user.id),
+          supabase.from("coordinator_scopes").select("specialty").eq("user_id", user.id),
+          supabase.from("user_tab_permissions").select("tab, allowed").eq("user_id", user.id),
+        ]);
 
       const tabOverrides: Record<string, boolean> = {};
       for (const row of tabPerms ?? []) tabOverrides[row.tab] = row.allowed;
@@ -85,4 +89,3 @@ export function useAuth() {
     },
   });
 }
-

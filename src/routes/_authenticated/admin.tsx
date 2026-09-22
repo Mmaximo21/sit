@@ -38,7 +38,20 @@ import {
   type CouncilRow,
   type SpecialtyRow,
 } from "@/lib/settings";
-import { CalendarClock, Gavel, History, KeyRound, PenLine, Plus, Save, Settings2, ShieldCheck, Stethoscope, Trash2, UserRound } from "lucide-react";
+import {
+  CalendarClock,
+  Gavel,
+  History,
+  KeyRound,
+  PenLine,
+  Plus,
+  Save,
+  Settings2,
+  ShieldCheck,
+  Stethoscope,
+  Trash2,
+  UserRound,
+} from "lucide-react";
 import { TabPermissionsPanel } from "@/components/TabPermissionsPanel";
 import { SignaturePanel } from "@/components/SignaturePanel";
 import { useServerFn } from "@tanstack/react-start";
@@ -58,7 +71,8 @@ export const Route = createFileRoute("/_authenticated/admin")({
       { property: "og:title", content: "Administração do sistema — AGA ILPI" },
       {
         property: "og:description",
-        content: "Gerencie residentes, especialidades, termos de encerramento e conselhos profissionais.",
+        content:
+          "Gerencie residentes, especialidades, termos de encerramento e conselhos profissionais.",
       },
     ],
   }),
@@ -96,10 +110,12 @@ function AdminPage() {
           <Settings2 className="size-5" />
           <span className="text-xs font-semibold uppercase tracking-widest">Administração</span>
         </div>
-        <h1 className="mt-1 font-display text-2xl font-semibold sm:text-3xl">Painel de administração</h1>
+        <h1 className="mt-1 font-display text-2xl font-semibold sm:text-3xl">
+          Painel de administração
+        </h1>
         <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
-          Gerencie os residentes da instituição, as especialidades atendidas, os termos de encerramento das
-          avaliações e as siglas dos conselhos profissionais.
+          Gerencie os residentes da instituição, as especialidades atendidas, os termos de
+          encerramento das avaliações e as siglas dos conselhos profissionais.
         </p>
       </header>
 
@@ -190,7 +206,8 @@ function ConfirmDelete({ label, onConfirm }: { label: string; onConfirm: () => v
         <AlertDialogHeader>
           <AlertDialogTitle>Excluir {label}?</AlertDialogTitle>
           <AlertDialogDescription>
-            Esta ação não pode ser desfeita. Registros já vinculados a avaliações permanecem no histórico.
+            Esta ação não pode ser desfeita. Registros já vinculados a avaliações permanecem no
+            histórico.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
@@ -205,7 +222,13 @@ function ConfirmDelete({ label, onConfirm }: { label: string; onConfirm: () => v
 /* ------------------------------- Residentes ------------------------------- */
 
 /** Edição de acolhimento e diagnóstico — disponível apenas nesta área (contas Master). */
-function ResidentExtraFields({ resident, onSaved }: { resident: ResidentRow; onSaved: () => void }) {
+function ResidentExtraFields({
+  resident,
+  onSaved,
+}: {
+  resident: ResidentRow;
+  onSaved: () => void;
+}) {
   const [admission, setAdmission] = useState(resident.admission_date ?? "");
   const [diagnosis, setDiagnosis] = useState(resident.diagnosis ?? "");
 
@@ -224,7 +247,8 @@ function ResidentExtraFields({ resident, onSaved }: { resident: ResidentRow; onS
     onError: (e: Error) => toast.error(e.message),
   });
 
-  const dirty = (resident.admission_date ?? "") !== admission || (resident.diagnosis ?? "") !== diagnosis;
+  const dirty =
+    (resident.admission_date ?? "") !== admission || (resident.diagnosis ?? "") !== diagnosis;
 
   return (
     <div className="mt-2 grid gap-2 sm:grid-cols-[160px_1fr_auto] sm:items-end">
@@ -250,7 +274,12 @@ function ResidentExtraFields({ resident, onSaved }: { resident: ResidentRow; onS
           placeholder="Ex.: Demência de Alzheimer, HAS, DM2"
         />
       </div>
-      <Button size="sm" variant="secondary" disabled={!dirty || save.isPending} onClick={() => save.mutate()}>
+      <Button
+        size="sm"
+        variant="secondary"
+        disabled={!dirty || save.isPending}
+        onClick={() => save.mutate()}
+      >
         Salvar
       </Button>
     </div>
@@ -318,7 +347,10 @@ function ResidentsTab() {
 
   return (
     <div className="grid gap-5 lg:grid-cols-[320px_1fr]">
-      <Panel title="Novo residente" description="Nome, nascimento e sexo alimentam o preenchimento automático.">
+      <Panel
+        title="Novo residente"
+        description="Nome, nascimento e sexo alimentam o preenchimento automático."
+      >
         <form
           className="space-y-3"
           onSubmit={(e) => {
@@ -328,11 +360,21 @@ function ResidentsTab() {
         >
           <div className="space-y-1.5">
             <Label htmlFor="res-name">Nome completo</Label>
-            <Input id="res-name" value={fullName} onChange={(e) => setFullName(e.target.value)} required />
+            <Input
+              id="res-name"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              required
+            />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="res-birth">Data de nascimento</Label>
-            <Input id="res-birth" type="date" value={birthDate} onChange={(e) => setBirthDate(e.target.value)} />
+            <Input
+              id="res-birth"
+              type="date"
+              value={birthDate}
+              onChange={(e) => setBirthDate(e.target.value)}
+            />
           </div>
           <div className="space-y-1.5">
             <Label>Sexo</Label>
@@ -384,11 +426,12 @@ function ResidentsTab() {
                   <div className="min-w-0">
                     <p className="truncate text-sm font-medium">{r.full_name}</p>
                     <p className="text-xs text-muted-foreground">
-                      {[ageFromBirthDate(r.birth_date), r.sex].filter(Boolean).join(" · ") || "Sem dados adicionais"}
+                      {[ageFromBirthDate(r.birth_date), r.sex].filter(Boolean).join(" · ") ||
+                        "Sem dados adicionais"}
                     </p>
                     <p className="mt-0.5 text-xs text-muted-foreground">
-                      Acolhimento: {formatResidentDate(r.admission_date) || "não informado"} · Diagnóstico:{" "}
-                      {r.diagnosis?.trim() || "não informado"}
+                      Acolhimento: {formatResidentDate(r.admission_date) || "não informado"} ·
+                      Diagnóstico: {r.diagnosis?.trim() || "não informado"}
                     </p>
                   </div>
                   <ConfirmDelete label={r.full_name} onConfirm={() => remove.mutate(r.id)} />
@@ -422,7 +465,10 @@ function SpecialtiesTab() {
       const { error } = await supabase
         .from("specialties")
         .insert({ name: value, default_council: council || null, sort_order: nextOrder });
-      if (error) throw new Error(error.message.includes("duplicate") ? "Especialidade já cadastrada." : error.message);
+      if (error)
+        throw new Error(
+          error.message.includes("duplicate") ? "Especialidade já cadastrada." : error.message,
+        );
     },
     onSuccess: () => {
       setName("");
@@ -456,7 +502,10 @@ function SpecialtiesTab() {
 
   return (
     <div className="grid gap-5 lg:grid-cols-[320px_1fr]">
-      <Panel title="Nova especialidade" description="Aparece nas listas de usuários, prazos e avaliações.">
+      <Panel
+        title="Nova especialidade"
+        description="Aparece nas listas de usuários, prazos e avaliações."
+      >
         <form
           className="space-y-3"
           onSubmit={(e) => {
@@ -516,7 +565,9 @@ function SpecialtiesTab() {
                     Ativa
                     <Switch
                       checked={s.active}
-                      onCheckedChange={(checked) => update.mutate({ id: s.id, patch: { active: checked } })}
+                      onCheckedChange={(checked) =>
+                        update.mutate({ id: s.id, patch: { active: checked } })
+                      }
                     />
                   </label>
                   <ConfirmDelete label={s.name} onConfirm={() => remove.mutate(s.id)} />
@@ -621,7 +672,12 @@ function ClosingTermsTab() {
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="term-title">Título</Label>
-            <Input id="term-title" value={title} onChange={(e) => setTitle(e.target.value)} required />
+            <Input
+              id="term-title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              required
+            />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="term-desc">Texto de orientação</Label>
@@ -682,13 +738,20 @@ function TermEditor({
         <div className="flex items-center gap-3">
           <label className="flex items-center gap-2 text-xs text-muted-foreground">
             Ativo
-            <Switch checked={term.active} onCheckedChange={(checked) => onSave({ active: checked })} />
+            <Switch
+              checked={term.active}
+              onCheckedChange={(checked) => onSave({ active: checked })}
+            />
           </label>
           <ConfirmDelete label="este termo" onConfirm={onDelete} />
         </div>
       </div>
       <div className="mt-3 space-y-3">
-        <Input value={title} onChange={(e) => setTitle(e.target.value)} aria-label="Título do termo" />
+        <Input
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          aria-label="Título do termo"
+        />
         <Textarea
           rows={3}
           value={description}
@@ -721,7 +784,10 @@ function CouncilsTab() {
       const { error } = await supabase
         .from("councils")
         .insert({ acronym: sigla, name: name.trim(), sort_order: nextOrder });
-      if (error) throw new Error(error.message.includes("duplicate") ? "Sigla já cadastrada." : error.message);
+      if (error)
+        throw new Error(
+          error.message.includes("duplicate") ? "Sigla já cadastrada." : error.message,
+        );
     },
     onSuccess: () => {
       setAcronym("");
@@ -755,7 +821,10 @@ function CouncilsTab() {
 
   return (
     <div className="grid gap-5 lg:grid-cols-[320px_1fr]">
-      <Panel title="Nova sigla" description="As siglas alimentam o campo Conselho profissional do termo.">
+      <Panel
+        title="Nova sigla"
+        description="As siglas alimentam o campo Conselho profissional do termo."
+      >
         <form
           className="space-y-3"
           onSubmit={(e) => {
@@ -800,14 +869,18 @@ function CouncilsTab() {
                     {c.acronym}
                     {!c.active ? <Badge variant="secondary">Inativo</Badge> : null}
                   </p>
-                  <p className="truncate text-xs text-muted-foreground">{c.name || "Sem descrição"}</p>
+                  <p className="truncate text-xs text-muted-foreground">
+                    {c.name || "Sem descrição"}
+                  </p>
                 </div>
                 <div className="flex items-center gap-3">
                   <label className="flex items-center gap-2 text-xs text-muted-foreground">
                     Ativo
                     <Switch
                       checked={c.active}
-                      onCheckedChange={(checked) => update.mutate({ id: c.id, patch: { active: checked } })}
+                      onCheckedChange={(checked) =>
+                        update.mutate({ id: c.id, patch: { active: checked } })
+                      }
                     />
                   </label>
                   <ConfirmDelete label={c.acronym} onConfirm={() => remove.mutate(c.id)} />
@@ -827,8 +900,10 @@ const PROTECTED_LOGINS = ["root", "direcao"];
 const isProtectedAccount = (fullName: string | null, username: string | null) => {
   const name = (fullName ?? "").trim().toLowerCase();
   const login = (username ?? "").trim().toLowerCase();
-  return ["matheus", "vanessa"].some((p) => name === p || name.startsWith(p + " ")) ||
-    PROTECTED_LOGINS.includes(login);
+  return (
+    ["matheus", "vanessa"].some((p) => name === p || name.startsWith(p + " ")) ||
+    PROTECTED_LOGINS.includes(login)
+  );
 };
 
 function MastersTab() {
@@ -874,13 +949,20 @@ function MastersTab() {
       refresh();
     },
     onError: (e: Error) =>
-      toast.error(/already been registered|duplicate/i.test(e.message) ? "Já existe uma conta com esse login." : e.message),
+      toast.error(
+        /already been registered|duplicate/i.test(e.message)
+          ? "Já existe uma conta com esse login."
+          : e.message,
+      ),
   });
 
   const toggle = useMutation({
-    mutationFn: ({ userId, master }: { userId: string; master: boolean }) => setRoleFn({ data: { userId, master } }),
+    mutationFn: ({ userId, master }: { userId: string; master: boolean }) =>
+      setRoleFn({ data: { userId, master } }),
     onSuccess: (_d, v) => {
-      toast.success(v.master ? "Título de Administrador concedido." : "Título de Administrador revogado.");
+      toast.success(
+        v.master ? "Título de Administrador concedido." : "Título de Administrador revogado.",
+      );
       refresh();
     },
     onError: (e: Error) => toast.error(e.message),
@@ -903,7 +985,12 @@ function MastersTab() {
         >
           <div className="space-y-1.5">
             <Label htmlFor="adm-name">Nome completo</Label>
-            <Input id="adm-name" value={form.fullName} onChange={(e) => setForm({ ...form, fullName: e.target.value })} required />
+            <Input
+              id="adm-name"
+              value={form.fullName}
+              onChange={(e) => setForm({ ...form, fullName: e.target.value })}
+              required
+            />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="adm-login">Usuário (login)</Label>
@@ -931,19 +1018,25 @@ function MastersTab() {
         </form>
       </Panel>
 
-      <Panel title="Títulos de Administrador" description="Conceda ou revogue o título das contas existentes.">
+      <Panel
+        title="Títulos de Administrador"
+        description="Conceda ou revogue o título das contas existentes."
+      >
         {isLoading ? (
           <p className="text-sm text-muted-foreground">Carregando…</p>
         ) : (
           <ul className="divide-y divide-border">
             {list.map((u) => {
-              const locked = isProtectedAccount(u.full_name, u.username) || u.id === session?.userId;
+              const locked =
+                isProtectedAccount(u.full_name, u.username) || u.id === session?.userId;
               return (
                 <li key={u.id} className="flex items-center justify-between gap-3 py-2.5">
                   <div className="min-w-0">
                     <p className="truncate text-sm font-medium">
                       {u.full_name || u.username}{" "}
-                      {u.isMaster ? <Badge className="ml-1 align-middle">Administrador</Badge> : null}
+                      {u.isMaster ? (
+                        <Badge className="ml-1 align-middle">Administrador</Badge>
+                      ) : null}
                     </p>
                     <p className="text-xs text-muted-foreground">
                       {[u.username, u.specialty].filter(Boolean).join(" · ")}
@@ -957,7 +1050,9 @@ function MastersTab() {
                       <Switch
                         checked={u.isMaster}
                         disabled={toggle.isPending}
-                        onCheckedChange={(checked) => toggle.mutate({ userId: u.id, master: checked })}
+                        onCheckedChange={(checked) =>
+                          toggle.mutate({ userId: u.id, master: checked })
+                        }
                         aria-label={`Alternar Administrador de ${u.username}`}
                       />
                     )}
@@ -971,7 +1066,6 @@ function MastersTab() {
     </div>
   );
 }
-
 
 function DeletionsTab() {
   const { data: logs, isLoading } = useQuery({

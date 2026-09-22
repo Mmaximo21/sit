@@ -40,8 +40,7 @@ export async function digitizeStoredFile({ path, fileName, fileType }: Input) {
   if (!isImage && !isPdf) {
     return {
       text: "",
-      note:
-        "Arquivo anexado no formato original (DOC/DOCX ou outro). A digitalização automática está disponível para PDF e imagens — converta o protocolo para PDF ou anexe a digitalização em imagem para transcrição automática.",
+      note: "Arquivo anexado no formato original (DOC/DOCX ou outro). A digitalização automática está disponível para PDF e imagens — converta o protocolo para PDF ou anexe a digitalização em imagem para transcrição automática.",
     };
   }
 
@@ -70,7 +69,8 @@ export async function digitizeStoredFile({ path, fileName, fileType }: Input) {
 
   if (!response.ok) {
     const detail = await response.text();
-    if (response.status === 429) throw new Error("Limite de uso da digitalização atingido. Tente novamente em instantes.");
+    if (response.status === 429)
+      throw new Error("Limite de uso da digitalização atingido. Tente novamente em instantes.");
     throw new Error(`Falha na digitalização do arquivo: ${detail.slice(0, 200)}`);
   }
 
