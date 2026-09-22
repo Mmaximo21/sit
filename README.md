@@ -167,4 +167,4 @@ O projeto foi submetido a uma auditoria integral de código e segurança:
 ## 📄 Licença & Autoria
 
 Desenvolvido e estruturado com foco em excelência no cuidado ao idoso por **Matheus Máximo**.  
-Todos os direitos reservados à **ILPI Santa Ana**.
+Todos os direitos reservados à **ILPI - LOSA*.
